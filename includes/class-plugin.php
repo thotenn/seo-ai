@@ -55,6 +55,7 @@ final class Plugin {
 		'SeoAi\\Rest\\Provider_Controller',
 		'SeoAi\\Rest\\Queue_Controller',
 		'SeoAi\\Rest\\Log_Controller',
+		'SeoAi\\Rest\\Inline_Ai_Controller',
 	];
 
 	/**
@@ -133,6 +134,18 @@ final class Plugin {
 		if ( class_exists( 'SeoAi\\Modules\\Content_Analysis\\Search_Intent' ) ) {
 			$search_intent = new Modules\Content_Analysis\Search_Intent( $this->provider_manager );
 			$search_intent->register_hooks();
+		}
+
+		// Link Suggestions (needs Provider_Manager).
+		if ( class_exists( 'SeoAi\\Modules\\Content_Analysis\\Link_Suggestions' ) ) {
+			$link_suggestions = new Modules\Content_Analysis\Link_Suggestions( $this->provider_manager );
+			$link_suggestions->register_hooks();
+		}
+
+		// Schema Builder (advanced schema types: Recipe, JobPosting).
+		if ( class_exists( 'SeoAi\\Modules\\Schema\\Schema_Builder' ) ) {
+			$schema_builder = new Modules\Schema\Schema_Builder();
+			$schema_builder->register_hooks();
 		}
 
 		/**

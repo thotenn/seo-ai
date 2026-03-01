@@ -202,6 +202,8 @@ final class AI_Optimizer {
 	public function detect_schema_type( string $content, string $post_type = 'post' ): string {
 		$allowed_types = [
 			'Article',
+			'BlogPosting',
+			'NewsArticle',
 			'HowTo',
 			'FAQPage',
 			'Product',

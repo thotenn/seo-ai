@@ -33,10 +33,10 @@ Tracking implementation of feature gap tickets from `docs/tickets/0-left/`.
 
 ## Phase 4 — Large Features (L effort)
 
-- [ ] **#02 Advanced Schema Types** — Recipe, JobPosting, Movie, Dataset, ClaimReview + custom templates
-- [ ] **#13 Internal Link Suggestions** — AI-powered link recommendations, link index, orphan detection
-- [ ] **#21 Gutenberg Inline AI Writing** — Block toolbar AI menu (Write More, Improve, Summarize, Fix Grammar)
-- [ ] **#22 Content AI Research Panel** — Content brief, related keywords, metrics targets, writing templates
+- [x] **#02 Advanced Schema Types** — Recipe, JobPosting, Movie, Dataset, ClaimReview + custom templates
+- [x] **#13 Internal Link Suggestions** — AI-powered link recommendations, link index, orphan detection
+- [x] **#21 Gutenberg Inline AI Writing** — Block toolbar AI menu (Write More, Improve, Summarize, Fix Grammar)
+- [x] **#22 Content AI Research Panel** — Content brief, related keywords, metrics targets, writing templates
 
 ---
 

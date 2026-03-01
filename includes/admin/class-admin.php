@@ -279,6 +279,15 @@ final class Admin {
 				true
 			);
 
+			// AI Writing Assistant sidebar panel (Gutenberg only).
+			wp_enqueue_script(
+				'seo-ai-editor-ai',
+				SEO_AI_URL . 'assets/js/editor-ai.js',
+				[ 'wp-plugins', 'wp-edit-post', 'wp-element', 'wp-data', 'wp-components' ],
+				SEO_AI_VERSION,
+				true
+			);
+
 			global $post;
 
 			if ( $post instanceof \WP_Post ) {

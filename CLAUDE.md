@@ -199,7 +199,7 @@ npm run test:debug    # step-by-step debug mode
 
 ## Versioning
 
-**Current version: 0.5.0**
+**Current version: 0.6.0**
 
 This plugin uses semantic versioning (MAJOR.MINOR.PATCH). Every change MUST include a version bump:
 

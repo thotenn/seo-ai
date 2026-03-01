@@ -5,6 +5,25 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-03-01
+
+### Added
+
+- **Advanced Schema Types** (#02): Recipe schema builder with full support for ingredients, instructions (HowToStep), prep/cook/total time, yield, category, cuisine, nutrition, and aggregate ratings. JobPosting schema builder with employer, location, remote work, salary range (MonetaryAmount), employment type, qualifications, and date posted/valid through. Both read structured JSON from `_seo_ai_schema_recipe` and `_seo_ai_schema_job` post meta. Added `BlogPosting` and `NewsArticle` to AI schema type detection.
+- **Internal Link Suggestions** (#13): AI-powered internal link recommendations that analyze post content and suggest relevant internal links with anchor text and reasoning. Auto-generates suggestions on metabox save when focus keyword is set. Orphan post detection finds posts with zero inbound internal links via content URL scanning. REST endpoint `POST /ai/link-suggestions` for on-demand suggestions. Stored in `_seo_ai_link_suggestions` post meta.
+- **Gutenberg Inline AI Writing** (#21): AI writing assistant sidebar panel in the block editor via `wp.plugins.registerPlugin`. Six predefined actions (Write More, Improve, Summarize, Fix Grammar, Simplify, Add Keywords) that operate on selected text. Custom free-form prompt support. REST endpoint `POST /ai/inline` with action-specific system prompts. Copy-to-clipboard for AI results. No build step required (uses `wp.element.createElement`).
+- **Content AI Research Panel** (#22): AI content brief generation from focus keyword. Returns recommended word count, heading count, internal/external link targets, subtopics to cover, related keywords, search intent, difficulty level, and content angle. REST endpoint `POST /ai/content-brief`. Integrated into the Gutenberg sidebar panel with tag-style display for subtopics and related keywords.
+
+### Changed
+
+- Plugin class `on_init()` now registers Link_Suggestions and Schema_Builder instances.
+- REST controllers array expanded with `Inline_Ai_Controller`.
+- Admin enqueue adds `editor-ai.js` on post editor pages for Gutenberg AI sidebar.
+- AI Optimizer `detect_schema_type()` now includes BlogPosting and NewsArticle in allowed types.
+- Schema Manager `get_post_schema()` routes Recipe/JobPosting types through Schema_Builder filter.
+- Post Meta `JSON_FIELDS` expanded with `schema_recipe`, `schema_job`, `link_suggestions`.
+- Post Meta `KNOWN_KEYS` expanded with `schema_recipe`, `schema_job`, `link_suggestions`.
+
 ## [0.5.0] - 2026-03-01
 
 ### Added

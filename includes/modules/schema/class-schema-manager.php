@@ -466,6 +466,12 @@ final class Schema_Manager {
 				$schemas[] = $this->get_product_schema( $post );
 				break;
 
+			case 'Recipe':
+			case 'JobPosting':
+				// Handled by Schema_Builder via the seo_ai/schema/graph filter.
+				$schemas[] = $this->get_webpage_schema( $post );
+				break;
+
 			case 'WebPage':
 			default:
 				$schemas[] = $this->get_webpage_schema( $post );

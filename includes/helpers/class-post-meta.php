@@ -30,6 +30,9 @@ class Post_Meta {
 		'focus_keywords',
 		'robots',
 		'schema_data',
+		'schema_recipe',
+		'schema_job',
+		'link_suggestions',
 	];
 
 	/**
@@ -57,6 +60,9 @@ class Post_Meta {
 		'cornerstone',
 		'search_intent',
 		'news_exclude',
+		'schema_recipe',
+		'schema_job',
+		'link_suggestions',
 	];
 
 	/**
