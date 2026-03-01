@@ -63,12 +63,17 @@ class Activator {
 			is_regex tinyint(1) NOT NULL DEFAULT 0,
 			hits bigint(20) unsigned NOT NULL DEFAULT 0,
 			status varchar(20) NOT NULL DEFAULT 'active',
+			category varchar(100) NOT NULL DEFAULT '',
+			query_handling varchar(20) NOT NULL DEFAULT 'ignore',
+			active_from datetime DEFAULT NULL,
+			active_until datetime DEFAULT NULL,
 			created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY  (id),
 			KEY source_url (source_url(191)),
 			KEY status (status),
-			KEY type (type)
+			KEY type (type),
+			KEY category (category)
 		) {$charset_collate};";
 
 		$sql_404_log = "CREATE TABLE {$log_table} (

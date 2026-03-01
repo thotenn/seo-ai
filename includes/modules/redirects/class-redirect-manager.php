@@ -58,6 +58,13 @@ final class Redirect_Manager {
 	}
 
 	/**
+	 * Allowed query handling modes.
+	 *
+	 * @var string[]
+	 */
+	private const QUERY_MODES = [ 'ignore', 'exact', 'strip' ];
+
+	/**
 	 * Create a new redirect.
 	 *
 	 * @since 1.0.0
@@ -65,11 +72,15 @@ final class Redirect_Manager {
 	 * @param array $data {
 	 *     Redirect data.
 	 *
-	 *     @type string $source_url The source URL path to redirect from.
-	 *     @type string $target_url The target URL to redirect to.
-	 *     @type int    $type       HTTP status code (301, 302, 307, 410, 451).
-	 *     @type int    $is_regex   Whether the source is a regex pattern (0 or 1).
-	 *     @type string $status     Redirect status ('active' or 'inactive').
+	 *     @type string $source_url     The source URL path to redirect from.
+	 *     @type string $target_url     The target URL to redirect to.
+	 *     @type int    $type           HTTP status code (301, 302, 307, 410, 451).
+	 *     @type int    $is_regex       Whether the source is a regex pattern (0 or 1).
+	 *     @type string $status         Redirect status ('active' or 'inactive').
+	 *     @type string $category       Optional redirect category label.
+	 *     @type string $query_handling Query parameter handling ('ignore', 'exact', 'strip').
+	 *     @type string $active_from    Optional start date (Y-m-d H:i:s) for scheduled activation.
+	 *     @type string $active_until   Optional end date (Y-m-d H:i:s) for scheduled deactivation.
 	 * }
 	 * @return int|false The inserted redirect ID on success, false on failure.
 	 */
@@ -92,20 +103,24 @@ final class Redirect_Manager {
 		}
 
 		$now    = current_time( 'mysql', true );
-		$result = $this->db->insert(
-			$this->table,
-			[
-				'source_url' => $source_url,
-				'target_url' => $target_url,
-				'type'       => $type,
-				'is_regex'   => $is_regex,
-				'status'     => $status,
-				'hits'       => 0,
-				'created_at' => $now,
-				'updated_at' => $now,
-			],
-			[ '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%s' ]
-		);
+		$insert = [
+			'source_url'     => $source_url,
+			'target_url'     => $target_url,
+			'type'           => $type,
+			'is_regex'       => $is_regex,
+			'status'         => $status,
+			'hits'           => 0,
+			'category'       => sanitize_text_field( $data['category'] ?? '' ),
+			'query_handling' => in_array( $data['query_handling'] ?? 'ignore', self::QUERY_MODES, true ) ? $data['query_handling'] : 'ignore',
+			'active_from'    => $this->sanitize_datetime( $data['active_from'] ?? '' ),
+			'active_until'   => $this->sanitize_datetime( $data['active_until'] ?? '' ),
+			'created_at'     => $now,
+			'updated_at'     => $now,
+		];
+
+		$format = [ '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s' ];
+
+		$result = $this->db->insert( $this->table, $insert, $format );
 
 		if ( false === $result ) {
 			return false;
@@ -683,5 +698,51 @@ final class Redirect_Manager {
 		$normalized_target = $this->normalize_source( $target );
 
 		return $normalized_source === $normalized_target;
+	}
+
+	/**
+	 * Check if a scheduled redirect is currently active.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param object $redirect The redirect row object.
+	 * @return bool True if the redirect is within its active schedule window.
+	 */
+	public function is_scheduled_active( object $redirect ): bool {
+		$now = current_time( 'mysql', true );
+
+		if ( ! empty( $redirect->active_from ) && $redirect->active_from > $now ) {
+			return false;
+		}
+
+		if ( ! empty( $redirect->active_until ) && $redirect->active_until < $now ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sanitize a datetime string for database storage.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param string $datetime Raw datetime string.
+	 * @return string|null Sanitized Y-m-d H:i:s string, or null.
+	 */
+	private function sanitize_datetime( string $datetime ): ?string {
+		$datetime = trim( $datetime );
+
+		if ( '' === $datetime ) {
+			return null;
+		}
+
+		$timestamp = strtotime( $datetime );
+
+		if ( false === $timestamp ) {
+			return null;
+		}
+
+		return gmdate( 'Y-m-d H:i:s', $timestamp );
 	}
 }

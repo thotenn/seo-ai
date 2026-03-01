@@ -95,7 +95,34 @@ final class Redirect_Handler {
 			return;
 		}
 
+		// Check scheduled activation/deactivation.
+		if ( ! $this->is_scheduled_active( $redirect ) ) {
+			return;
+		}
+
 		$this->execute_redirect( $redirect, $request_url );
+	}
+
+	/**
+	 * Check if a redirect is within its scheduled active window.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param object $redirect The redirect row object.
+	 * @return bool True if the redirect is currently active per its schedule.
+	 */
+	private function is_scheduled_active( object $redirect ): bool {
+		$now = current_time( 'mysql', true );
+
+		if ( ! empty( $redirect->active_from ) && $redirect->active_from > $now ) {
+			return false;
+		}
+
+		if ( ! empty( $redirect->active_until ) && $redirect->active_until < $now ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -278,6 +305,21 @@ final class Redirect_Handler {
 		$url = rawurldecode( $url );
 
 		return $url;
+	}
+
+	/**
+	 * Get the full request URL including query string.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @return string The full request URL with query string.
+	 */
+	private function get_request_url_with_query(): string {
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return '';
+		}
+
+		return rawurldecode( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 	}
 
 	/**

@@ -149,6 +149,33 @@ class Module_Manager {
 					'SeoAi\\Modules\\Robots\\Robots_Txt',
 				],
 			],
+			[
+				'id'          => 'indexing',
+				'name'        => __( 'Instant Indexing', 'seo-ai' ),
+				'description' => __( 'Submit URLs to IndexNow and Bing for faster indexing on publish.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Indexing\\Indexing',
+				],
+			],
+			[
+				'id'          => 'video_sitemap',
+				'name'        => __( 'Video Sitemap', 'seo-ai' ),
+				'description' => __( 'Generate a dedicated video XML sitemap for embedded YouTube, Vimeo, and HTML5 videos.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Sitemap\\Video_Sitemap',
+				],
+			],
+			[
+				'id'          => 'news_sitemap',
+				'name'        => __( 'News Sitemap', 'seo-ai' ),
+				'description' => __( 'Generate a Google News compliant sitemap for articles published in the last 48 hours.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Sitemap\\News_Sitemap',
+				],
+			],
 		];
 	}
 

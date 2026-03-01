@@ -244,6 +244,33 @@ $settings = get_option('seo_ai_settings', []);
 </div>
 
 <div class="seo-ai-card">
+    <h2>Instant Indexing</h2>
+    <p class="description"><?php esc_html_e( 'Submit URLs to search engines for faster crawling when content is published or updated.', 'seo-ai' ); ?></p>
+    <table class="form-table">
+        <tr>
+            <th><label>Auto-Submit on Publish</label></th>
+            <td>
+                <label class="seo-ai-toggle">
+                    <input type="checkbox" name="seo_ai_settings[indexing_auto_submit]" value="1"
+                           <?php checked( $settings['indexing_auto_submit'] ?? false ); ?> />
+                    <span class="seo-ai-toggle-slider"></span>
+                </label>
+                <span class="description"><?php esc_html_e( 'Automatically submit URLs to IndexNow when posts are published.', 'seo-ai' ); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_bing_key">Bing API Key</label></th>
+            <td>
+                <input type="text" name="seo_ai_settings[bing_api_key]" id="seo_ai_bing_key"
+                       value="<?php echo esc_attr( $settings['bing_api_key'] ?? '' ); ?>"
+                       class="regular-text" placeholder="<?php esc_attr_e( 'Optional', 'seo-ai' ); ?>" />
+                <p class="description"><?php esc_html_e( 'Optional. Get a key from Bing Webmaster Tools for direct URL submission.', 'seo-ai' ); ?></p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="seo-ai-card">
     <h2>Custom AI Prompts</h2>
     <p class="description">Override the default AI prompts used for SEO optimization. Leave empty to use defaults.</p>
     <table class="form-table">

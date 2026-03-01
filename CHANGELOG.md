@@ -5,6 +5,26 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-03-01
+
+### Added
+
+- **Search Intent Detection** (#20): AI-powered classification of focus keywords into informational, transactional, navigational, or commercial intent. Auto-detects on metabox save when focus keyword is set. Returns intent-specific optimization suggestions (5 per intent type). Stores result in `_seo_ai_search_intent` post meta.
+- **Instant Indexing** (#14): IndexNow API integration for immediate URL submission to search engines on publish. Auto-generates 32-character hex key stored as `seo_ai_indexnow_key` option. Optional Bing URL Submission API support with configurable API key. Settings in Advanced tab with auto-submit toggle.
+- **Advanced Redirects** (#09): Redirect scheduling with `active_from`/`active_until` datetime fields. Redirect categories for organization. Query parameter handling modes (ignore, exact, strip). Handler checks schedule window before executing redirects. Four new DB columns added via `dbDelta()`.
+- **Video Sitemap** (#03): Auto-detects YouTube, Vimeo, HTML5 `<video>`, and WordPress `[video]` shortcode embeds in post content. Generates `video-sitemap.xml` with `xmlns:video` namespace. Auto-extracts YouTube thumbnails. Integrates with sitemap index. Toggleable module (default: off).
+- **News Sitemap** (#04): Google News compliant sitemap with 48-hour publication window. Configurable publication name and post types. Per-post exclusion via `_seo_ai_news_exclude` meta. Generates `news-sitemap.xml` with `xmlns:news` namespace. Toggleable module (default: off).
+
+### Changed
+
+- Module Manager now registers 3 new modules: `indexing`, `video_sitemap`, `news_sitemap` (all default off).
+- Redirects table schema expanded with `category`, `query_handling`, `active_from`, `active_until` columns.
+- Redirect Manager `create()` accepts new fields; added `is_scheduled_active()` and `sanitize_datetime()` methods.
+- Redirect Handler checks scheduled activation window before executing redirects.
+- Post Meta `KNOWN_KEYS` expanded with `search_intent` and `news_exclude`.
+- Sitemap settings tab includes Video Sitemap and News Sitemap configuration cards.
+- Advanced settings tab includes Instant Indexing configuration card.
+
 ## [0.4.0] - 2026-03-01
 
 ### Added

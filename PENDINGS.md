@@ -23,11 +23,11 @@ Tracking implementation of feature gap tickets from `docs/tickets/0-left/`.
 
 ## Phase 3 — Medium Priority Medium Features (M effort)
 
-- [ ] **#20 Search Intent Detection** — AI-powered intent classification + intent-specific suggestions
-- [ ] **#14 Instant Indexing API** — IndexNow + Google/Bing Indexing API with auto-submit
-- [ ] **#09 Advanced Redirects** — Query param matching, redirect categories, scheduled redirects
-- [ ] **#03 Video Sitemap** — Auto-detect videos, generate video XML sitemap
-- [ ] **#04 News Sitemap** — Google News compliant sitemap
+- [x] **#20 Search Intent Detection** — AI-powered intent classification + intent-specific suggestions
+- [x] **#14 Instant Indexing API** — IndexNow + Google/Bing Indexing API with auto-submit
+- [x] **#09 Advanced Redirects** — Query param matching, redirect categories, scheduled redirects
+- [x] **#03 Video Sitemap** — Auto-detect videos, generate video XML sitemap
+- [x] **#04 News Sitemap** — Google News compliant sitemap
 
 ---
 

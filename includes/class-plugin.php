@@ -129,6 +129,12 @@ final class Plugin {
 		$this->load_textdomain();
 		$this->module_manager->register_modules();
 
+		// Search Intent detection (needs Provider_Manager, not a toggleable module).
+		if ( class_exists( 'SeoAi\\Modules\\Content_Analysis\\Search_Intent' ) ) {
+			$search_intent = new Modules\Content_Analysis\Search_Intent( $this->provider_manager );
+			$search_intent->register_hooks();
+		}
+
 		/**
 		 * Fires after the SEO AI plugin is fully initialized.
 		 *

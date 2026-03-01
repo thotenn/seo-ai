@@ -55,6 +55,8 @@ class Post_Meta {
 		'readability_score',
 		'auto_seo',
 		'cornerstone',
+		'search_intent',
+		'news_exclude',
 	];
 
 	/**

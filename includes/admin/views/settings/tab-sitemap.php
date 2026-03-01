@@ -74,3 +74,77 @@ $settings = get_option('seo_ai_settings', []);
         </tr>
     </table>
 </div>
+
+<div class="seo-ai-card">
+    <h2><?php esc_html_e( 'Video Sitemap', 'seo-ai' ); ?></h2>
+    <table class="form-table">
+        <tr>
+            <th><label><?php esc_html_e( 'Enable Video Sitemap', 'seo-ai' ); ?></label></th>
+            <td>
+                <label class="seo-ai-toggle">
+                    <input type="checkbox" name="seo_ai_settings[video_sitemap_enabled]" value="1"
+                           <?php checked( $settings['video_sitemap_enabled'] ?? false ); ?> />
+                    <span class="seo-ai-toggle-slider"></span>
+                </label>
+                <span class="description"><?php esc_html_e( 'Generate a dedicated video sitemap for embedded YouTube, Vimeo, and HTML5 videos.', 'seo-ai' ); ?></span>
+                <?php if ( ! empty( $settings['video_sitemap_enabled'] ) ) : ?>
+                <p class="description">
+                    <?php esc_html_e( 'Your video sitemap:', 'seo-ai' ); ?>
+                    <a href="<?php echo esc_url( home_url( '/video-sitemap.xml' ) ); ?>" target="_blank"><?php echo esc_html( home_url( '/video-sitemap.xml' ) ); ?></a>
+                </p>
+                <?php endif; ?>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="seo-ai-card">
+    <h2><?php esc_html_e( 'News Sitemap', 'seo-ai' ); ?></h2>
+    <table class="form-table">
+        <tr>
+            <th><label><?php esc_html_e( 'Enable News Sitemap', 'seo-ai' ); ?></label></th>
+            <td>
+                <label class="seo-ai-toggle">
+                    <input type="checkbox" name="seo_ai_settings[news_sitemap_enabled]" value="1"
+                           <?php checked( $settings['news_sitemap_enabled'] ?? false ); ?> />
+                    <span class="seo-ai-toggle-slider"></span>
+                </label>
+                <span class="description"><?php esc_html_e( 'Google News compliant sitemap. Only includes articles from the last 48 hours.', 'seo-ai' ); ?></span>
+                <?php if ( ! empty( $settings['news_sitemap_enabled'] ) ) : ?>
+                <p class="description">
+                    <?php esc_html_e( 'Your news sitemap:', 'seo-ai' ); ?>
+                    <a href="<?php echo esc_url( home_url( '/news-sitemap.xml' ) ); ?>" target="_blank"><?php echo esc_html( home_url( '/news-sitemap.xml' ) ); ?></a>
+                </p>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_news_pub_name"><?php esc_html_e( 'Publication Name', 'seo-ai' ); ?></label></th>
+            <td>
+                <input type="text" name="seo_ai_settings[news_sitemap_publication_name]" id="seo_ai_news_pub_name"
+                       value="<?php echo esc_attr( $settings['news_sitemap_publication_name'] ?? get_bloginfo( 'name' ) ); ?>"
+                       class="regular-text" />
+            </td>
+        </tr>
+        <tr>
+            <th><?php esc_html_e( 'News Post Types', 'seo-ai' ); ?></th>
+            <td>
+                <?php
+                $news_types = $settings['news_sitemap_post_types'] ?? [ 'post' ];
+                $all_public = get_post_types( [ 'public' => true ], 'objects' );
+                foreach ( $all_public as $pt ) :
+                    if ( 'attachment' === $pt->name ) {
+                        continue;
+                    }
+                    ?>
+                    <label style="display:block;margin-bottom:4px;">
+                        <input type="checkbox" name="seo_ai_settings[news_sitemap_post_types][]"
+                               value="<?php echo esc_attr( $pt->name ); ?>"
+                               <?php checked( in_array( $pt->name, (array) $news_types, true ) ); ?> />
+                        <?php echo esc_html( $pt->labels->name ); ?>
+                    </label>
+                <?php endforeach; ?>
+            </td>
+        </tr>
+    </table>
+</div>
