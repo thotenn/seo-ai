@@ -1,0 +1,146 @@
+/* SEO AI - Settings Page Styles */
+
+/* ========================================================================
+   Tab Navigation
+   ======================================================================== */
+.seo-ai-tabs .nav-tab {
+    border: none;
+    background: transparent;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.seo-ai-tabs .nav-tab:hover {
+    color: #2563eb;
+    background: transparent;
+}
+
+.seo-ai-tabs .nav-tab-active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    background: transparent;
+    box-shadow: none;
+}
+
+.seo-ai-tab-panel {
+    display: none;
+}
+
+.seo-ai-tab-panel.active {
+    display: block;
+}
+
+/* ========================================================================
+   Settings Form Tables
+   ======================================================================== */
+.seo-ai-card .form-table {
+    margin-top: 0;
+}
+
+.seo-ai-card .form-table th {
+    width: 220px;
+    padding: 16px 10px 16px 0;
+    font-weight: 500;
+}
+
+.seo-ai-card .form-table td {
+    padding: 12px 10px;
+}
+
+.seo-ai-card .form-table td p.description {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* ========================================================================
+   Module Toggle Cards
+   ======================================================================== */
+.seo-ai-module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.seo-ai-module-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: border-color 0.2s;
+}
+
+.seo-ai-module-card:hover {
+    border-color: #93b5f7;
+}
+
+.seo-ai-module-card.enabled {
+    border-color: #2563eb;
+    background: #f8faff;
+}
+
+.seo-ai-module-info {
+    flex: 1;
+}
+
+.seo-ai-module-info strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.seo-ai-module-desc {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* ========================================================================
+   Code / Textarea Fields
+   ======================================================================== */
+.seo-ai-code-field {
+    width: 100%;
+    min-height: 100px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12px;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #f9fafb;
+}
+
+/* ========================================================================
+   Section Dividers
+   ======================================================================== */
+.seo-ai-section-divider {
+    border: none;
+    border-top: 1px solid #f0f0f0;
+    margin: 20px 0;
+}
+
+/* ========================================================================
+   Responsive
+   ======================================================================== */
+@media screen and (max-width: 782px) {
+    .seo-ai-tabs .nav-tab {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .seo-ai-card .form-table th {
+        width: auto;
+    }
+
+    .seo-ai-module-grid {
+        grid-template-columns: 1fr;
+    }
+}
