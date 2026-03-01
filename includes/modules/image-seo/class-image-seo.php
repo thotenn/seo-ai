@@ -54,6 +54,11 @@ final class Image_Seo {
 		if ( $this->options->get( 'image_auto_alt', true ) ) {
 			add_filter( 'wp_get_attachment_image_attributes', [ $this, 'add_alt_text' ], 10, 2 );
 		}
+
+		// Auto-fill caption and description on upload.
+		if ( $this->options->get( 'image_auto_caption', false ) || $this->options->get( 'image_auto_description', false ) ) {
+			add_action( 'add_attachment', [ $this, 'fill_attachment_fields' ] );
+		}
 	}
 
 	/**
@@ -192,8 +197,15 @@ final class Image_Seo {
 		// Remove multiple consecutive spaces.
 		$name = preg_replace( '/\s+/', ' ', trim( $name ) );
 
-		// Apply title case.
-		$name = mb_convert_case( $name, MB_CASE_TITLE, 'UTF-8' );
+		// Apply case conversion based on setting.
+		$case_setting = $this->options->get( 'image_alt_case', 'title' );
+
+		$name = match ( $case_setting ) {
+			'sentence'  => mb_strtoupper( mb_substr( $name, 0, 1, 'UTF-8' ), 'UTF-8' ) . mb_strtolower( mb_substr( $name, 1, null, 'UTF-8' ), 'UTF-8' ),
+			'lower'     => mb_strtolower( $name, 'UTF-8' ),
+			'upper'     => mb_strtoupper( $name, 'UTF-8' ),
+			default     => mb_convert_case( $name, MB_CASE_TITLE, 'UTF-8' ), // title
+		};
 
 		/**
 		 * Filters the auto-generated image alt text.
@@ -204,6 +216,45 @@ final class Image_Seo {
 		 * @param string $filename The original filename.
 		 */
 		return (string) apply_filters( 'seo_ai/generated_image_alt', $name, $filename );
+	}
+
+	/**
+	 * Fill caption and description fields on attachment upload.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int $attachment_id The attachment post ID.
+	 * @return void
+	 */
+	public function fill_attachment_fields( int $attachment_id ): void {
+		$attachment = get_post( $attachment_id );
+
+		if ( ! $attachment instanceof \WP_Post || ! wp_attachment_is_image( $attachment_id ) ) {
+			return;
+		}
+
+		$file     = get_attached_file( $attachment_id );
+		$filename = $file ? pathinfo( $file, PATHINFO_FILENAME ) : $attachment->post_title;
+		$base_text = $this->generate_alt_from_filename( $filename );
+
+		$updates = [];
+
+		// Auto-fill caption (post_excerpt).
+		if ( $this->options->get( 'image_auto_caption', false ) && empty( $attachment->post_excerpt ) ) {
+			$caption_tpl = $this->options->get( 'image_caption_template', '%filename%' );
+			$updates['post_excerpt'] = $this->apply_template( $caption_tpl, $base_text, $attachment );
+		}
+
+		// Auto-fill description (post_content).
+		if ( $this->options->get( 'image_auto_description', false ) && empty( $attachment->post_content ) ) {
+			$desc_tpl = $this->options->get( 'image_description_template', '%filename%' );
+			$updates['post_content'] = $this->apply_template( $desc_tpl, $base_text, $attachment );
+		}
+
+		if ( ! empty( $updates ) ) {
+			$updates['ID'] = $attachment_id;
+			wp_update_post( $updates );
+		}
 	}
 
 	/**

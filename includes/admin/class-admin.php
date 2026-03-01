@@ -656,6 +656,9 @@ final class Admin {
 				: 'default';
 		}
 
+		// Cornerstone content toggle.
+		$sanitized['cornerstone'] = ! empty( $data['cornerstone'] ) ? '1' : '0';
+
 		return $sanitized;
 	}
 

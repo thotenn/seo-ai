@@ -128,6 +128,32 @@
 }
 
 /* ========================================================================
+   Cost Row
+   ======================================================================== */
+.seo-ai-cost-row {
+    display: flex;
+    gap: 24px;
+}
+
+.seo-ai-cost-row label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.seo-ai-cost-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.seo-ai-cost-input span {
+    font-weight: 600;
+    color: #6b7280;
+}
+
+/* ========================================================================
    Responsive
    ======================================================================== */
 @media screen and (max-width: 782px) {

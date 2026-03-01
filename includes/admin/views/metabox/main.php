@@ -177,6 +177,17 @@ wp_nonce_field('seo_ai_metabox', 'seo_ai_metabox_nonce');
     <!-- Advanced Tab -->
     <div class="seo-ai-metabox-panel" id="seo-ai-panel-advanced">
         <div class="seo-ai-field">
+            <label>
+                <input type="checkbox" name="seo_ai[cornerstone]" value="1"
+                       <?php checked($meta('cornerstone'), '1'); ?> />
+                <strong><?php esc_html_e('This is cornerstone content', 'seo-ai'); ?></strong>
+            </label>
+            <p class="description" style="margin-top:4px;color:#6b7280;">
+                <?php esc_html_e('Cornerstone content gets stricter SEO analysis thresholds (higher word count, more links required).', 'seo-ai'); ?>
+            </p>
+        </div>
+
+        <div class="seo-ai-field">
             <label>Canonical URL</label>
             <input type="url" name="seo_ai[canonical]" value="<?php echo esc_attr($meta('canonical')); ?>"
                    placeholder="Leave empty for default (permalink)" />

@@ -354,6 +354,14 @@ final class AI_Optimizer {
 			);
 		}
 
+		// Prepend custom prompt if configured.
+		$settings = get_option( 'seo_ai_providers', [] );
+		$active   = $settings['active_provider'] ?? '';
+		$custom   = trim( $settings[ $active ]['custom_prompt'] ?? '' );
+		if ( '' !== $custom ) {
+			$system_prompt = $custom . "\n\n" . $system_prompt;
+		}
+
 		$defaults = [
 			'temperature' => 0.7,
 			'max_tokens'  => 200,

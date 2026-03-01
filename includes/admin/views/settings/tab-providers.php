@@ -90,15 +90,10 @@ $providers = [
         <tr>
             <th><label for="seo_ai_openai_model">Model</label></th>
             <td>
-                <select name="seo_ai_providers[openai][model]" id="seo_ai_openai_model">
-                    <?php
-                    $models = ['gpt-4o-mini' => 'GPT-4o Mini (Fast, cheap)', 'gpt-4o' => 'GPT-4o (Best quality)', 'gpt-4.1' => 'GPT-4.1 (Latest)', 'gpt-4.1-mini' => 'GPT-4.1 Mini (Latest, fast)'];
-                    $current = $providers_settings['openai']['model'] ?? 'gpt-4o-mini';
-                    foreach ($models as $val => $label):
-                    ?>
-                    <option value="<?php echo esc_attr($val); ?>" <?php selected($current, $val); ?>><?php echo esc_html($label); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <input type="text" name="seo_ai_providers[openai][model]" id="seo_ai_openai_model"
+                       value="<?php echo esc_attr($providers_settings['openai']['model'] ?? 'gpt-4o-mini'); ?>"
+                       class="regular-text" placeholder="gpt-4o-mini" />
+                <p class="description">e.g. gpt-4o-mini, gpt-4o, gpt-4.1, gpt-4.1-mini</p>
             </td>
         </tr>
         <tr>
@@ -108,6 +103,46 @@ $providers = [
                        min="0" max="1" step="0.1" value="<?php echo esc_attr($providers_settings['openai']['temperature'] ?? '0.3'); ?>" />
                 <span class="seo-ai-range-value"><?php echo esc_html($providers_settings['openai']['temperature'] ?? '0.3'); ?></span>
                 <p class="description">Lower = more deterministic, Higher = more creative. Recommended: 0.3 for SEO.</p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_openai_prompt">Custom Prompt</label></th>
+            <td>
+                <textarea name="seo_ai_providers[openai][custom_prompt]" id="seo_ai_openai_prompt"
+                          rows="4" class="large-text"
+                          placeholder="Optional: additional instructions for the AI..."
+                ><?php echo esc_textarea($providers_settings['openai']['custom_prompt'] ?? ''); ?></textarea>
+                <p class="description">
+                    Additional instructions prepended to every SEO optimization request.
+                    <button type="button" class="button-link seo-ai-reset-prompt"
+                            data-target="seo_ai_openai_prompt">Reset to Default</button>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th>Cost per 1M Tokens</th>
+            <td>
+                <div class="seo-ai-cost-row">
+                    <div>
+                        <label>Input</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[openai][cost_input]"
+                                   value="<?php echo esc_attr($providers_settings['openai']['cost_input'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Output</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[openai][cost_output]"
+                                   value="<?php echo esc_attr($providers_settings['openai']['cost_output'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                </div>
+                <p class="description">USD per 1 million tokens. Used for cost tracking. Set to 0 for free/local models.</p>
             </td>
         </tr>
         <tr>
@@ -144,15 +179,10 @@ $providers = [
         <tr>
             <th><label for="seo_ai_claude_model">Model</label></th>
             <td>
-                <select name="seo_ai_providers[claude][model]" id="seo_ai_claude_model">
-                    <?php
-                    $models = ['claude-sonnet-4-5-20250929' => 'Claude Sonnet 4.5 (Balanced)', 'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5 (Fast, cheap)', 'claude-opus-4-6' => 'Claude Opus 4.6 (Most capable)'];
-                    $current = $providers_settings['claude']['model'] ?? 'claude-sonnet-4-5-20250929';
-                    foreach ($models as $val => $label):
-                    ?>
-                    <option value="<?php echo esc_attr($val); ?>" <?php selected($current, $val); ?>><?php echo esc_html($label); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <input type="text" name="seo_ai_providers[claude][model]" id="seo_ai_claude_model"
+                       value="<?php echo esc_attr($providers_settings['claude']['model'] ?? 'claude-sonnet-4-5-20250929'); ?>"
+                       class="regular-text" placeholder="claude-sonnet-4-5-20250929" />
+                <p class="description">e.g. claude-sonnet-4-5-20250929, claude-haiku-4-5-20251001, claude-opus-4-6</p>
             </td>
         </tr>
         <tr>
@@ -161,6 +191,46 @@ $providers = [
                 <input type="range" name="seo_ai_providers[claude][temperature]" id="seo_ai_claude_temp"
                        min="0" max="1" step="0.1" value="<?php echo esc_attr($providers_settings['claude']['temperature'] ?? '0.3'); ?>" />
                 <span class="seo-ai-range-value"><?php echo esc_html($providers_settings['claude']['temperature'] ?? '0.3'); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_claude_prompt">Custom Prompt</label></th>
+            <td>
+                <textarea name="seo_ai_providers[claude][custom_prompt]" id="seo_ai_claude_prompt"
+                          rows="4" class="large-text"
+                          placeholder="Optional: additional instructions for the AI..."
+                ><?php echo esc_textarea($providers_settings['claude']['custom_prompt'] ?? ''); ?></textarea>
+                <p class="description">
+                    Additional instructions prepended to every SEO optimization request.
+                    <button type="button" class="button-link seo-ai-reset-prompt"
+                            data-target="seo_ai_claude_prompt">Reset to Default</button>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th>Cost per 1M Tokens</th>
+            <td>
+                <div class="seo-ai-cost-row">
+                    <div>
+                        <label>Input</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[claude][cost_input]"
+                                   value="<?php echo esc_attr($providers_settings['claude']['cost_input'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Output</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[claude][cost_output]"
+                                   value="<?php echo esc_attr($providers_settings['claude']['cost_output'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                </div>
+                <p class="description">USD per 1 million tokens. Used for cost tracking. Set to 0 for free/local models.</p>
             </td>
         </tr>
         <tr>
@@ -188,15 +258,10 @@ $providers = [
         <tr>
             <th><label for="seo_ai_gemini_model">Model</label></th>
             <td>
-                <select name="seo_ai_providers[gemini][model]" id="seo_ai_gemini_model">
-                    <?php
-                    $models = ['gemini-2.0-flash' => 'Gemini 2.0 Flash (Fast)', 'gemini-2.5-pro' => 'Gemini 2.5 Pro (Best)'];
-                    $current = $providers_settings['gemini']['model'] ?? 'gemini-2.0-flash';
-                    foreach ($models as $val => $label):
-                    ?>
-                    <option value="<?php echo esc_attr($val); ?>" <?php selected($current, $val); ?>><?php echo esc_html($label); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <input type="text" name="seo_ai_providers[gemini][model]" id="seo_ai_gemini_model"
+                       value="<?php echo esc_attr($providers_settings['gemini']['model'] ?? 'gemini-2.0-flash'); ?>"
+                       class="regular-text" placeholder="gemini-2.0-flash" />
+                <p class="description">e.g. gemini-2.0-flash, gemini-2.5-pro, gemini-2.5-flash</p>
             </td>
         </tr>
         <tr>
@@ -205,6 +270,46 @@ $providers = [
                 <input type="range" name="seo_ai_providers[gemini][temperature]" id="seo_ai_gemini_temp"
                        min="0" max="1" step="0.1" value="<?php echo esc_attr($providers_settings['gemini']['temperature'] ?? '0.3'); ?>" />
                 <span class="seo-ai-range-value"><?php echo esc_html($providers_settings['gemini']['temperature'] ?? '0.3'); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_gemini_prompt">Custom Prompt</label></th>
+            <td>
+                <textarea name="seo_ai_providers[gemini][custom_prompt]" id="seo_ai_gemini_prompt"
+                          rows="4" class="large-text"
+                          placeholder="Optional: additional instructions for the AI..."
+                ><?php echo esc_textarea($providers_settings['gemini']['custom_prompt'] ?? ''); ?></textarea>
+                <p class="description">
+                    Additional instructions prepended to every SEO optimization request.
+                    <button type="button" class="button-link seo-ai-reset-prompt"
+                            data-target="seo_ai_gemini_prompt">Reset to Default</button>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th>Cost per 1M Tokens</th>
+            <td>
+                <div class="seo-ai-cost-row">
+                    <div>
+                        <label>Input</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[gemini][cost_input]"
+                                   value="<?php echo esc_attr($providers_settings['gemini']['cost_input'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Output</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[gemini][cost_output]"
+                                   value="<?php echo esc_attr($providers_settings['gemini']['cost_output'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                </div>
+                <p class="description">USD per 1 million tokens. Used for cost tracking. Set to 0 for free/local models.</p>
             </td>
         </tr>
         <tr>
@@ -236,14 +341,12 @@ $providers = [
         <tr>
             <th><label for="seo_ai_ollama_model">Model</label></th>
             <td>
-                <select name="seo_ai_providers[ollama][model]" id="seo_ai_ollama_model">
-                    <option value="<?php echo esc_attr($providers_settings['ollama']['model'] ?? 'llama3.2'); ?>">
-                        <?php echo esc_html($providers_settings['ollama']['model'] ?? 'llama3.2'); ?>
-                    </option>
-                </select>
+                <input type="text" name="seo_ai_providers[ollama][model]" id="seo_ai_ollama_model"
+                       value="<?php echo esc_attr($providers_settings['ollama']['model'] ?? 'llama3.2'); ?>"
+                       class="regular-text" placeholder="llama3.2" />
                 <button type="button" class="button" id="seo-ai-fetch-ollama-models">Fetch Models</button>
                 <span class="seo-ai-fetch-result"></span>
-                <p class="description">Click "Fetch Models" to load available models from your Ollama instance.</p>
+                <p class="description">Type a model name or click "Fetch Models" to discover available models from your Ollama instance.</p>
             </td>
         </tr>
         <tr>
@@ -252,6 +355,46 @@ $providers = [
                 <input type="range" name="seo_ai_providers[ollama][temperature]" id="seo_ai_ollama_temp"
                        min="0" max="1" step="0.1" value="<?php echo esc_attr($providers_settings['ollama']['temperature'] ?? '0.3'); ?>" />
                 <span class="seo-ai-range-value"><?php echo esc_html($providers_settings['ollama']['temperature'] ?? '0.3'); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_ollama_prompt">Custom Prompt</label></th>
+            <td>
+                <textarea name="seo_ai_providers[ollama][custom_prompt]" id="seo_ai_ollama_prompt"
+                          rows="4" class="large-text"
+                          placeholder="Optional: additional instructions for the AI..."
+                ><?php echo esc_textarea($providers_settings['ollama']['custom_prompt'] ?? ''); ?></textarea>
+                <p class="description">
+                    Additional instructions prepended to every SEO optimization request.
+                    <button type="button" class="button-link seo-ai-reset-prompt"
+                            data-target="seo_ai_ollama_prompt">Reset to Default</button>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th>Cost per 1M Tokens</th>
+            <td>
+                <div class="seo-ai-cost-row">
+                    <div>
+                        <label>Input</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[ollama][cost_input]"
+                                   value="<?php echo esc_attr($providers_settings['ollama']['cost_input'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Output</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[ollama][cost_output]"
+                                   value="<?php echo esc_attr($providers_settings['ollama']['cost_output'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                </div>
+                <p class="description">USD per 1 million tokens. Used for cost tracking. Set to 0 for free/local models.</p>
             </td>
         </tr>
         <tr>
@@ -279,20 +422,10 @@ $providers = [
         <tr>
             <th><label for="seo_ai_openrouter_model">Model</label></th>
             <td>
-                <select name="seo_ai_providers[openrouter][model]" id="seo_ai_openrouter_model">
-                    <?php
-                    $models = [
-                        'anthropic/claude-sonnet-4-5-20250929' => 'Claude Sonnet 4.5',
-                        'openai/gpt-4o' => 'GPT-4o',
-                        'google/gemini-2.0-flash' => 'Gemini 2.0 Flash',
-                        'meta-llama/llama-3.1-70b-instruct' => 'Llama 3.1 70B',
-                    ];
-                    $current = $providers_settings['openrouter']['model'] ?? 'anthropic/claude-sonnet-4-5-20250929';
-                    foreach ($models as $val => $label):
-                    ?>
-                    <option value="<?php echo esc_attr($val); ?>" <?php selected($current, $val); ?>><?php echo esc_html($label); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <input type="text" name="seo_ai_providers[openrouter][model]" id="seo_ai_openrouter_model"
+                       value="<?php echo esc_attr($providers_settings['openrouter']['model'] ?? 'anthropic/claude-sonnet-4-5-20250929'); ?>"
+                       class="regular-text" placeholder="anthropic/claude-sonnet-4-5-20250929" />
+                <p class="description">e.g. anthropic/claude-sonnet-4-5-20250929, openai/gpt-4o, google/gemini-2.0-flash, meta-llama/llama-3.1-70b-instruct</p>
             </td>
         </tr>
         <tr>
@@ -301,6 +434,46 @@ $providers = [
                 <input type="range" name="seo_ai_providers[openrouter][temperature]" id="seo_ai_openrouter_temp"
                        min="0" max="1" step="0.1" value="<?php echo esc_attr($providers_settings['openrouter']['temperature'] ?? '0.3'); ?>" />
                 <span class="seo-ai-range-value"><?php echo esc_html($providers_settings['openrouter']['temperature'] ?? '0.3'); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_openrouter_prompt">Custom Prompt</label></th>
+            <td>
+                <textarea name="seo_ai_providers[openrouter][custom_prompt]" id="seo_ai_openrouter_prompt"
+                          rows="4" class="large-text"
+                          placeholder="Optional: additional instructions for the AI..."
+                ><?php echo esc_textarea($providers_settings['openrouter']['custom_prompt'] ?? ''); ?></textarea>
+                <p class="description">
+                    Additional instructions prepended to every SEO optimization request.
+                    <button type="button" class="button-link seo-ai-reset-prompt"
+                            data-target="seo_ai_openrouter_prompt">Reset to Default</button>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th>Cost per 1M Tokens</th>
+            <td>
+                <div class="seo-ai-cost-row">
+                    <div>
+                        <label>Input</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[openrouter][cost_input]"
+                                   value="<?php echo esc_attr($providers_settings['openrouter']['cost_input'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Output</label>
+                        <div class="seo-ai-cost-input">
+                            <span>$</span>
+                            <input type="number" name="seo_ai_providers[openrouter][cost_output]"
+                                   value="<?php echo esc_attr($providers_settings['openrouter']['cost_output'] ?? ''); ?>"
+                                   min="0" step="0.001" style="max-width:120px" />
+                        </div>
+                    </div>
+                </div>
+                <p class="description">USD per 1 million tokens. Used for cost tracking. Set to 0 for free/local models.</p>
             </td>
         </tr>
         <tr>

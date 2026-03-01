@@ -268,8 +268,16 @@
 
 /* Column in post list */
 .column-seo_ai_score {
-    width: 60px;
+    width: 70px;
     text-align: center;
+}
+
+/* Cornerstone Star */
+.seo-ai-cornerstone-star {
+    color: #f59e0b;
+    font-size: 14px;
+    margin-right: 2px;
+    vertical-align: middle;
 }
 
 /* ========================================================================

@@ -54,6 +54,7 @@ class Post_Meta {
 		'seo_score',
 		'readability_score',
 		'auto_seo',
+		'cornerstone',
 	];
 
 	/**

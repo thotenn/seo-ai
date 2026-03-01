@@ -5,6 +5,38 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-01
+
+### Added
+
+- **Cornerstone Content** (#23): Per-post "This is cornerstone content" checkbox in the Advanced tab. Cornerstone posts get stricter analysis thresholds: 900-word minimum (vs 300), 3 internal links (vs 1), 2 external links (vs 1). Star indicator shown in post list SEO column.
+- **404 Monitor CSV Export** (#19): "Export CSV" button on the 404 Log page with optional date range filter (From/To). Exports URL, hits, first hit, last hit, referrer, and user agent.
+- **Bulk Actions Enhancement** (#18): 6 new bulk actions in post list — Set Nofollow, Remove Nofollow, Remove Custom Canonical, Set Schema: Article, Clear All SEO Data, Re-analyze SEO. Generalized robots directive handler.
+- **Advanced Image SEO** (#11): Alt text case conversion (Title Case, Sentence case, lowercase, UPPERCASE). Auto-fill caption and description on image upload with configurable templates. New settings: Alt Text Case, Auto Caption, Caption Template, Auto Description, Description Template.
+- **Robots.txt Editor** (#15): Robots.txt custom rules textarea in Advanced settings tab with real-time syntax validation. Link to view current robots.txt. Valid directives highlighted green, invalid lines flagged in red.
+
+### Changed
+
+- Analyzer `check_content_length()`, `check_internal_links()`, `check_external_links()` now accept `$is_cornerstone` parameter for stricter thresholds.
+- Bulk Actions class: `bulk_set_noindex()` replaced with generalized `bulk_set_robots()` supporting any directive.
+- Post list SEO column width increased from 60px to 70px to accommodate cornerstone star.
+- Image SEO `generate_alt_from_filename()` now respects `image_alt_case` setting instead of always using title case.
+
+## [0.2.0] - 2026-03-01
+
+### Changed
+
+- **Model selection**: Replaced `<select>` dropdowns with `<input type="text">` fields for all 5 AI providers (OpenAI, Claude, Gemini, Ollama, OpenRouter), allowing any model ID to be entered without waiting for plugin updates.
+- **Ollama model fetch**: "Fetch Models" button now populates a `<datalist>` for autocomplete on the text input instead of replacing a `<select>`.
+
+### Added
+
+- **Custom prompt per provider**: New textarea field for each provider to add custom instructions prepended to every SEO optimization request, with "Reset to Default" button.
+- **Cost per 1M tokens**: New input/output cost fields (USD) per provider for cost tracking, with `$` prefix and `step="0.001"` precision.
+- **Backend sanitization**: `custom_prompt` (sanitize_textarea_field), `cost_input` and `cost_output` (float, min 0) added to `sanitize_provider_settings()`.
+- **Custom prompt integration**: AI Optimizer `chat()` method now prepends the active provider's custom prompt to all system prompts.
+- **CSS**: `.seo-ai-cost-row` and `.seo-ai-cost-input` styles for the cost fields layout.
+
 ## [0.1.1] - 2026-03-01
 
 ### Fixed

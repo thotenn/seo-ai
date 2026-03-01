@@ -128,11 +128,18 @@ final class Columns {
 		$css_class = $this->get_score_class( $score );
 		$label     = $this->get_score_label( $score );
 
+		// Cornerstone indicator.
+		$cornerstone = $this->post_meta->get( $post_id, 'cornerstone', '0' );
+		$star        = '1' === (string) $cornerstone
+			? '<span class="seo-ai-cornerstone-star" title="' . esc_attr__( 'Cornerstone Content', 'seo-ai' ) . '">&#9733;</span>'
+			: '';
+
 		printf(
-			'<span class="seo-ai-score seo-ai-score--%s" title="%s">'
+			'%s<span class="seo-ai-score seo-ai-score--%s" title="%s">'
 			. '<span class="seo-ai-score__circle"></span>'
 			. '<span class="seo-ai-score__value">%d</span>'
 			. '</span>',
+			$star,
 			esc_attr( $css_class ),
 			esc_attr( $label ),
 			$score

@@ -6,6 +6,36 @@ global $wpdb;
 $log_table = $wpdb->prefix . 'seo_ai_404_log';
 $table_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $log_table)) === $log_table;
 
+// Handle CSV export.
+if (isset($_GET['seo_ai_export_404']) && check_admin_referer('seo_ai_export_404')) {
+    if ($table_exists) {
+        $export_where = '1=1';
+        $export_params = [];
+        if (!empty($_GET['date_from'])) {
+            $export_where .= ' AND last_hit >= %s';
+            $export_params[] = sanitize_text_field(wp_unslash($_GET['date_from'])) . ' 00:00:00';
+        }
+        if (!empty($_GET['date_to'])) {
+            $export_where .= ' AND last_hit <= %s';
+            $export_params[] = sanitize_text_field(wp_unslash($_GET['date_to'])) . ' 23:59:59';
+        }
+        $query = "SELECT url, hit_count, first_hit, last_hit, referrer, user_agent FROM {$log_table} WHERE {$export_where} ORDER BY hit_count DESC";
+        $rows = empty($export_params)
+            ? $wpdb->get_results($query)
+            : $wpdb->get_results($wpdb->prepare($query, ...$export_params));
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=seo-ai-404-log-' . gmdate('Y-m-d') . '.csv');
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['URL', 'Hits', 'First Hit', 'Last Hit', 'Referrer', 'User Agent']);
+        foreach ($rows as $row) {
+            fputcsv($out, [$row->url, $row->hit_count, $row->first_hit, $row->last_hit, $row->referrer, $row->user_agent]);
+        }
+        fclose($out);
+        exit;
+    }
+}
+
 // Handle bulk delete.
 if (isset($_POST['seo_ai_clear_404_log']) && check_admin_referer('seo_ai_clear_404_log')) {
     if ($table_exists) {
@@ -78,20 +108,36 @@ $total_pages = ceil($total_items / $per_page);
 
     <!-- Summary -->
     <div class="seo-ai-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <div>
                 <strong><?php echo esc_html($total_items); ?></strong>
                 <?php esc_html_e('unique 404 URLs recorded', 'seo-ai'); ?>
             </div>
-            <?php if ($total_items > 0) : ?>
-            <form method="post" style="margin:0;">
-                <?php wp_nonce_field('seo_ai_clear_404_log'); ?>
-                <button type="submit" name="seo_ai_clear_404_log" value="1" class="button"
-                    onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the entire 404 log?', 'seo-ai'); ?>');">
-                    <?php esc_html_e('Clear Log', 'seo-ai'); ?>
-                </button>
-            </form>
-            <?php endif; ?>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                <?php if ($total_items > 0) : ?>
+                <!-- Export CSV -->
+                <form method="get" style="margin:0;display:flex;gap:6px;align-items:center;">
+                    <input type="hidden" name="page" value="seo-ai-404-log" />
+                    <?php wp_nonce_field('seo_ai_export_404', '_wpnonce', false); ?>
+                    <input type="hidden" name="seo_ai_export_404" value="1" />
+                    <label style="font-size:12px;"><?php esc_html_e('From:', 'seo-ai'); ?></label>
+                    <input type="date" name="date_from" value="" style="max-width:140px;" />
+                    <label style="font-size:12px;"><?php esc_html_e('To:', 'seo-ai'); ?></label>
+                    <input type="date" name="date_to" value="" style="max-width:140px;" />
+                    <button type="submit" class="button">
+                        <?php esc_html_e('Export CSV', 'seo-ai'); ?>
+                    </button>
+                </form>
+                <!-- Clear Log -->
+                <form method="post" style="margin:0;">
+                    <?php wp_nonce_field('seo_ai_clear_404_log'); ?>
+                    <button type="submit" name="seo_ai_clear_404_log" value="1" class="button"
+                        onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the entire 404 log?', 'seo-ai'); ?>');">
+                        <?php esc_html_e('Clear Log', 'seo-ai'); ?>
+                    </button>
+                </form>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 

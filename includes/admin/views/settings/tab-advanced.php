@@ -67,7 +67,57 @@ $settings = get_option('seo_ai_settings', []);
                 <input type="text" name="seo_ai_settings[image_alt_template]" id="seo_ai_alt_template"
                        value="<?php echo esc_attr($settings['image_alt_template'] ?? '%filename%'); ?>"
                        class="regular-text" />
-                <p class="description">Variables: <code>%filename%</code>, <code>%title%</code>, <code>%site_name%</code></p>
+                <p class="description">Variables: <code>%filename%</code>, <code>%title%</code>, <code>%caption%</code>, <code>%sitename%</code></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_alt_case">Alt Text Case</label></th>
+            <td>
+                <?php $alt_case = $settings['image_alt_case'] ?? 'title'; ?>
+                <select name="seo_ai_settings[image_alt_case]" id="seo_ai_alt_case">
+                    <option value="title" <?php selected($alt_case, 'title'); ?>>Title Case</option>
+                    <option value="sentence" <?php selected($alt_case, 'sentence'); ?>>Sentence case</option>
+                    <option value="lower" <?php selected($alt_case, 'lower'); ?>>lowercase</option>
+                    <option value="upper" <?php selected($alt_case, 'upper'); ?>>UPPERCASE</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th><label>Auto Caption</label></th>
+            <td>
+                <label class="seo-ai-toggle">
+                    <input type="checkbox" name="seo_ai_settings[image_auto_caption]" value="1"
+                           <?php checked($settings['image_auto_caption'] ?? false); ?> />
+                    <span class="seo-ai-toggle-slider"></span>
+                </label>
+                <span class="description">Auto-fill image caption on upload from filename.</span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_caption_template">Caption Template</label></th>
+            <td>
+                <input type="text" name="seo_ai_settings[image_caption_template]" id="seo_ai_caption_template"
+                       value="<?php echo esc_attr($settings['image_caption_template'] ?? '%filename%'); ?>"
+                       class="regular-text" />
+            </td>
+        </tr>
+        <tr>
+            <th><label>Auto Description</label></th>
+            <td>
+                <label class="seo-ai-toggle">
+                    <input type="checkbox" name="seo_ai_settings[image_auto_description]" value="1"
+                           <?php checked($settings['image_auto_description'] ?? false); ?> />
+                    <span class="seo-ai-toggle-slider"></span>
+                </label>
+                <span class="description">Auto-fill image description on upload from filename.</span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="seo_ai_desc_template">Description Template</label></th>
+            <td>
+                <input type="text" name="seo_ai_settings[image_description_template]" id="seo_ai_desc_template"
+                       value="<?php echo esc_attr($settings['image_description_template'] ?? '%filename%'); ?>"
+                       class="regular-text" />
             </td>
         </tr>
     </table>
@@ -101,6 +151,29 @@ $settings = get_option('seo_ai_settings', []);
                 <input type="text" name="seo_ai_settings[breadcrumb_home_text]" id="seo_ai_breadcrumb_home"
                        value="<?php echo esc_attr($settings['breadcrumb_home_text'] ?? 'Home'); ?>"
                        class="regular-text" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="seo-ai-card">
+    <h2>Robots.txt</h2>
+    <p class="description">
+        <?php esc_html_e('Add custom rules to your robots.txt file. Default rules (wp-admin, wp-includes, etc.) are always included.', 'seo-ai'); ?>
+        <a href="<?php echo esc_url(home_url('/robots.txt')); ?>" target="_blank"><?php esc_html_e('View current robots.txt', 'seo-ai'); ?> &rarr;</a>
+    </p>
+    <table class="form-table">
+        <tr>
+            <th><label for="seo_ai_robots_rules">Custom Rules</label></th>
+            <td>
+                <textarea name="seo_ai_settings[robots_custom_rules]" id="seo_ai_robots_rules"
+                          rows="8" class="large-text" style="font-family:monospace;font-size:13px;"
+                          placeholder="User-agent: *&#10;Disallow: /private/&#10;Allow: /public/"
+                ><?php echo esc_textarea($settings['robots_custom_rules'] ?? ''); ?></textarea>
+                <p class="description">
+                    <?php esc_html_e('Valid directives: User-agent, Disallow, Allow, Sitemap, Crawl-delay, Host, # (comments).', 'seo-ai'); ?>
+                </p>
+                <div id="seo-ai-robots-validation" style="margin-top:8px;"></div>
             </td>
         </tr>
     </table>

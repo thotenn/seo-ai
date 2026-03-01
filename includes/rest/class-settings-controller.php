@@ -383,6 +383,27 @@ final class Settings_Controller extends Rest_Controller {
 				$clean['max_tokens'] = $existing_data['max_tokens'];
 			}
 
+			// Custom prompt.
+			if ( isset( $provider_data['custom_prompt'] ) ) {
+				$clean['custom_prompt'] = sanitize_textarea_field( (string) $provider_data['custom_prompt'] );
+			} elseif ( isset( $existing_data['custom_prompt'] ) ) {
+				$clean['custom_prompt'] = $existing_data['custom_prompt'];
+			}
+
+			// Cost per 1M tokens (input).
+			if ( isset( $provider_data['cost_input'] ) ) {
+				$clean['cost_input'] = max( 0.0, (float) $provider_data['cost_input'] );
+			} elseif ( isset( $existing_data['cost_input'] ) ) {
+				$clean['cost_input'] = $existing_data['cost_input'];
+			}
+
+			// Cost per 1M tokens (output).
+			if ( isset( $provider_data['cost_output'] ) ) {
+				$clean['cost_output'] = max( 0.0, (float) $provider_data['cost_output'] );
+			} elseif ( isset( $existing_data['cost_output'] ) ) {
+				$clean['cost_output'] = $existing_data['cost_output'];
+			}
+
 			$sanitized[ $pid ] = $clean;
 		}
 

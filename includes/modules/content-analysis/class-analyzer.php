@@ -76,6 +76,9 @@ final class Analyzer {
 		$keyword     = $data['keyword'];
 		$url         = $data['url'];
 
+		// Check if this is cornerstone content for stricter thresholds.
+		$is_cornerstone = '1' === (string) get_post_meta( $post_id, self::META_PREFIX . 'cornerstone', true );
+
 		// ----- SEO Checks -----
 		$seo_checks = [];
 
@@ -90,9 +93,9 @@ final class Analyzer {
 
 		$seo_checks[] = $this->check_title_length( $title );
 		$seo_checks[] = $this->check_description_length( $description );
-		$seo_checks[] = $this->check_content_length( $content );
-		$seo_checks[] = $this->check_internal_links( $content, $post_id );
-		$seo_checks[] = $this->check_external_links( $content );
+		$seo_checks[] = $this->check_content_length( $content, $is_cornerstone );
+		$seo_checks[] = $this->check_internal_links( $content, $post_id, $is_cornerstone );
+		$seo_checks[] = $this->check_external_links( $content, $is_cornerstone );
 		$seo_checks[] = $this->check_image_alt( $content, $keyword );
 
 		$seo_score = Score::calculate( $seo_checks );
@@ -557,37 +560,40 @@ final class Analyzer {
 	/**
 	 * Check whether the content meets the minimum word count.
 	 *
-	 * Minimum: 300 words.
+	 * Minimum: 300 words (900 for cornerstone content).
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $content Post content (HTML).
+	 * @param string $content        Post content (HTML).
+	 * @param bool   $is_cornerstone Whether this is cornerstone content.
 	 *
 	 * @return array Check result.
 	 */
-	public function check_content_length( string $content ): array {
+	public function check_content_length( string $content, bool $is_cornerstone = false ): array {
 		$text       = wp_strip_all_tags( $content );
 		$word_count = str_word_count( $text );
+		$min_words  = $is_cornerstone ? 900 : 300;
+		$warn_words = $is_cornerstone ? 600 : 200;
 
-		if ( $word_count >= 300 ) {
+		if ( $word_count >= $min_words ) {
 			return $this->build_check(
 				'content_length',
 				__( 'Content Length', 'seo-ai' ),
 				'good',
-				/* translators: %d: word count */
-				sprintf( __( 'Content has %d words, which meets the minimum of 300 words.', 'seo-ai' ), $word_count ),
+				/* translators: 1: word count, 2: minimum */
+				sprintf( __( 'Content has %1$d words, which meets the minimum of %2$d words.', 'seo-ai' ), $word_count, $min_words ),
 				7,
 				100
 			);
 		}
 
-		if ( $word_count >= 200 ) {
+		if ( $word_count >= $warn_words ) {
 			return $this->build_check(
 				'content_length',
 				__( 'Content Length', 'seo-ai' ),
 				'warning',
-				/* translators: %d: word count */
-				sprintf( __( 'Content has %d words. Aim for at least 300 words for better SEO.', 'seo-ai' ), $word_count ),
+				/* translators: 1: word count, 2: minimum */
+				sprintf( __( 'Content has %1$d words. Aim for at least %2$d words for better SEO.', 'seo-ai' ), $word_count, $min_words ),
 				7,
 				50
 			);
@@ -597,8 +603,8 @@ final class Analyzer {
 			'content_length',
 			__( 'Content Length', 'seo-ai' ),
 			'error',
-			/* translators: %d: word count */
-			sprintf( __( 'Content has only %d words. Write at least 300 words for meaningful SEO value.', 'seo-ai' ), $word_count ),
+			/* translators: 1: word count, 2: minimum */
+			sprintf( __( 'Content has only %1$d words. Write at least %2$d words for meaningful SEO value.', 'seo-ai' ), $word_count, $min_words ),
 			7,
 			20
 		);
@@ -609,12 +615,13 @@ final class Analyzer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $content Post content (HTML).
-	 * @param int    $post_id Current post ID (to exclude self-links).
+	 * @param string $content        Post content (HTML).
+	 * @param int    $post_id        Current post ID (to exclude self-links).
+	 * @param bool   $is_cornerstone Whether this is cornerstone content.
 	 *
 	 * @return array Check result.
 	 */
-	public function check_internal_links( string $content, int $post_id ): array {
+	public function check_internal_links( string $content, int $post_id, bool $is_cornerstone = false ): array {
 		$site_url = wp_parse_url( home_url(), PHP_URL_HOST ) ?: '';
 		$links    = $this->extract_links( $content, $site_url );
 
@@ -624,9 +631,10 @@ final class Analyzer {
 			return untrailingslashit( $href ) !== untrailingslashit( $post_url ?: '' );
 		} );
 
-		$count = count( $internal );
+		$count     = count( $internal );
+		$min_links = $is_cornerstone ? 3 : 1;
 
-		if ( $count >= 1 ) {
+		if ( $count >= $min_links ) {
 			return $this->build_check(
 				'internal_links',
 				__( 'Internal Links', 'seo-ai' ),
@@ -635,6 +643,18 @@ final class Analyzer {
 				sprintf( _n( 'Found %d internal link.', 'Found %d internal links.', $count, 'seo-ai' ), $count ),
 				7,
 				100
+			);
+		}
+
+		if ( $count > 0 && $is_cornerstone ) {
+			return $this->build_check(
+				'internal_links',
+				__( 'Internal Links', 'seo-ai' ),
+				'warning',
+				/* translators: 1: link count, 2: minimum required */
+				sprintf( __( 'Found %1$d internal links. Cornerstone content should have at least %2$d.', 'seo-ai' ), $count, $min_links ),
+				7,
+				50
 			);
 		}
 
@@ -653,16 +673,18 @@ final class Analyzer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $content Post content (HTML).
+	 * @param string $content        Post content (HTML).
+	 * @param bool   $is_cornerstone Whether this is cornerstone content.
 	 *
 	 * @return array Check result.
 	 */
-	public function check_external_links( string $content ): array {
+	public function check_external_links( string $content, bool $is_cornerstone = false ): array {
 		$site_url = wp_parse_url( home_url(), PHP_URL_HOST ) ?: '';
 		$links    = $this->extract_links( $content, $site_url );
 		$count    = count( $links['external'] );
+		$min_ext  = $is_cornerstone ? 2 : 1;
 
-		if ( $count >= 1 ) {
+		if ( $count >= $min_ext ) {
 			return $this->build_check(
 				'external_links',
 				__( 'External Links', 'seo-ai' ),
@@ -671,6 +693,18 @@ final class Analyzer {
 				sprintf( _n( 'Found %d external link.', 'Found %d external links.', $count, 'seo-ai' ), $count ),
 				4,
 				100
+			);
+		}
+
+		if ( $count > 0 && $is_cornerstone ) {
+			return $this->build_check(
+				'external_links',
+				__( 'External Links', 'seo-ai' ),
+				'warning',
+				/* translators: 1: link count, 2: minimum required */
+				sprintf( __( 'Found %1$d external link. Cornerstone content should have at least %2$d.', 'seo-ai' ), $count, $min_ext ),
+				4,
+				50
 			);
 		}
 

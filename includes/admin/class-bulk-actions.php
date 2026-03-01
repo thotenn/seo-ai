@@ -75,9 +75,15 @@ final class Bulk_Actions {
 	 * @return string[] Modified bulk actions.
 	 */
 	public function add_bulk_actions( array $actions ): array {
-		$actions['seo_ai_optimize']        = __( 'Optimize SEO with AI', 'seo-ai' );
-		$actions['seo_ai_noindex']         = __( 'Set Noindex', 'seo-ai' );
-		$actions['seo_ai_remove_noindex']  = __( 'Remove Noindex', 'seo-ai' );
+		$actions['seo_ai_optimize']           = __( 'Optimize SEO with AI', 'seo-ai' );
+		$actions['seo_ai_noindex']            = __( 'Set Noindex', 'seo-ai' );
+		$actions['seo_ai_remove_noindex']     = __( 'Remove Noindex', 'seo-ai' );
+		$actions['seo_ai_nofollow']           = __( 'Set Nofollow', 'seo-ai' );
+		$actions['seo_ai_remove_nofollow']    = __( 'Remove Nofollow', 'seo-ai' );
+		$actions['seo_ai_remove_canonical']   = __( 'Remove Custom Canonical', 'seo-ai' );
+		$actions['seo_ai_set_schema_article'] = __( 'Set Schema: Article', 'seo-ai' );
+		$actions['seo_ai_clear_seo_data']     = __( 'Clear All SEO Data', 'seo-ai' );
+		$actions['seo_ai_reanalyze']          = __( 'Re-analyze SEO', 'seo-ai' );
 
 		return $actions;
 	}
@@ -102,13 +108,43 @@ final class Bulk_Actions {
 				break;
 
 			case 'seo_ai_noindex':
-				$count = $this->bulk_set_noindex( $post_ids, true );
+				$count = $this->bulk_set_robots( $post_ids, 'noindex', true );
 				$redirect_to = add_query_arg( 'seo_ai_noindexed', $count, $redirect_to );
 				break;
 
 			case 'seo_ai_remove_noindex':
-				$count = $this->bulk_set_noindex( $post_ids, false );
+				$count = $this->bulk_set_robots( $post_ids, 'noindex', false );
 				$redirect_to = add_query_arg( 'seo_ai_noindex_removed', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_nofollow':
+				$count = $this->bulk_set_robots( $post_ids, 'nofollow', true );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_remove_nofollow':
+				$count = $this->bulk_set_robots( $post_ids, 'nofollow', false );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_remove_canonical':
+				$count = $this->bulk_remove_meta( $post_ids, 'canonical' );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_set_schema_article':
+				$count = $this->bulk_set_meta( $post_ids, 'schema_type', 'Article' );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_clear_seo_data':
+				$count = $this->bulk_clear_seo_data( $post_ids );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
+				break;
+
+			case 'seo_ai_reanalyze':
+				$count = $this->bulk_reanalyze( $post_ids );
+				$redirect_to = add_query_arg( 'seo_ai_bulk_updated', $count, $redirect_to );
 				break;
 		}
 
@@ -168,6 +204,23 @@ final class Bulk_Actions {
 					_n(
 						'Noindex removed from %d post.',
 						'Noindex removed from %d posts.',
+						$count,
+						'seo-ai'
+					),
+					$count
+				) )
+			);
+		}
+
+		if ( isset( $_GET['seo_ai_bulk_updated'] ) ) {
+			$count = (int) $_GET['seo_ai_bulk_updated'];
+			printf(
+				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+				esc_html( sprintf(
+					/* translators: %d: number of posts updated */
+					_n(
+						'SEO data updated on %d post.',
+						'SEO data updated on %d posts.',
 						$count,
 						'seo-ai'
 					),
@@ -238,15 +291,16 @@ final class Bulk_Actions {
 	}
 
 	/**
-	 * Bulk set or remove noindex on selected posts.
+	 * Bulk set or remove a robots directive on selected posts.
 	 *
-	 * @since 1.0.0
+	 * @since 0.3.0
 	 *
-	 * @param int[] $post_ids Array of post IDs.
-	 * @param bool  $noindex  True to set noindex, false to remove it.
+	 * @param int[]  $post_ids  Array of post IDs.
+	 * @param string $directive The directive (e.g. 'noindex', 'nofollow').
+	 * @param bool   $add       True to add, false to remove.
 	 * @return int Number of posts updated.
 	 */
-	private function bulk_set_noindex( array $post_ids, bool $noindex ): int {
+	private function bulk_set_robots( array $post_ids, string $directive, bool $add ): int {
 		$count = 0;
 
 		foreach ( $post_ids as $post_id ) {
@@ -262,15 +316,128 @@ final class Bulk_Actions {
 				$robots = [];
 			}
 
-			if ( $noindex ) {
-				if ( ! in_array( 'noindex', $robots, true ) ) {
-					$robots[] = 'noindex';
+			if ( $add ) {
+				if ( ! in_array( $directive, $robots, true ) ) {
+					$robots[] = $directive;
 				}
 			} else {
-				$robots = array_values( array_diff( $robots, [ 'noindex' ] ) );
+				$robots = array_values( array_diff( $robots, [ $directive ] ) );
 			}
 
 			$this->post_meta->set( $post_id, 'robots', $robots );
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Bulk set a specific meta value on selected posts.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int[]  $post_ids Array of post IDs.
+	 * @param string $key      Meta key (without prefix).
+	 * @param mixed  $value    Value to set.
+	 * @return int Number of posts updated.
+	 */
+	private function bulk_set_meta( array $post_ids, string $key, mixed $value ): int {
+		$count = 0;
+
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int) $post_id;
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
+			$this->post_meta->set( $post_id, $key, $value );
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Bulk remove a specific meta value from selected posts.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int[]  $post_ids Array of post IDs.
+	 * @param string $key      Meta key (without prefix).
+	 * @return int Number of posts updated.
+	 */
+	private function bulk_remove_meta( array $post_ids, string $key ): int {
+		$count = 0;
+
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int) $post_id;
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
+			$this->post_meta->delete( $post_id, $key );
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Bulk clear all SEO data from selected posts.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int[] $post_ids Array of post IDs.
+	 * @return int Number of posts cleared.
+	 */
+	private function bulk_clear_seo_data( array $post_ids ): int {
+		$count = 0;
+
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int) $post_id;
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
+			$this->post_meta->delete_all( $post_id );
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Bulk re-analyze SEO scores for selected posts.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param int[] $post_ids Array of post IDs.
+	 * @return int Number of posts re-analyzed.
+	 */
+	private function bulk_reanalyze( array $post_ids ): int {
+		$count    = 0;
+		$analyzer = new \SeoAi\Modules\Content_Analysis\Analyzer();
+
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int) $post_id;
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
+			$result = $analyzer->analyze( $post_id );
+
+			if ( isset( $result['seo']['score'] ) ) {
+				$this->post_meta->set( $post_id, 'seo_score', $result['seo']['score'] );
+			}
+
+			if ( isset( $result['readability']['score'] ) ) {
+				$this->post_meta->set( $post_id, 'readability_score', $result['readability']['score'] );
+			}
+
 			$count++;
 		}
 
