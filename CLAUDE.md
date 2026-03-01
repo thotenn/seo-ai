@@ -151,8 +151,8 @@ All prefixed with `_seo_ai_`:
 ### Adding a new settings tab
 
 1. Create `views/settings/tab-<name>.php`
-2. Add tab button in `views/settings/main.php`
-3. Add `data-tab` attribute matching the panel ID
+2. Add the tab slug and label to the `$tabs` array in `views/settings/main.php`
+3. Tabs are server-side rendered (full page reload per tab via `?tab=` query param) — no client-side JS switching
 
 ## Testing
 
@@ -160,6 +160,23 @@ No automated test suite currently. Manual testing via:
 - WordPress admin UI
 - REST API calls (use `wp_create_nonce('wp_rest')` for auth)
 - Browser DevTools for JS/CSS debugging
+
+## Versioning
+
+**Current version: 0.0.2**
+
+This plugin uses semantic versioning (MAJOR.MINOR.PATCH). Every change MUST include a version bump:
+
+1. Update `Version:` in the plugin header comment in `seo-ai.php`
+2. Update the `SEO_AI_VERSION` constant in `seo-ai.php`
+3. Update `CHANGELOG.md` with the changes
+
+`SEO_AI_VERSION` is used as the cache-busting parameter for all enqueued CSS/JS assets (`wp_enqueue_style`/`wp_enqueue_script`). If the version is not bumped, browsers will serve stale cached files and changes won't take effect.
+
+Version guidelines:
+- **PATCH** (0.0.x): Bug fixes, CSS tweaks, copy changes
+- **MINOR** (0.x.0): New features, new modules, new settings tabs, new REST endpoints
+- **MAJOR** (x.0.0): Breaking changes, database migrations, architecture changes
 
 ## Gotchas
 
