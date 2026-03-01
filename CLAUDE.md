@@ -156,14 +156,50 @@ All prefixed with `_seo_ai_`:
 
 ## Testing
 
-No automated test suite currently. Manual testing via:
+### E2E Tests (Playwright)
+
+The plugin includes Playwright E2E tests that run against a local WordPress instance.
+
+**Setup:**
+
+```bash
+cd wp-content/plugins/seo-ai
+npm install
+npx playwright install chromium
+cp .env.test.example .env.test  # then edit credentials
+```
+
+**Run tests:**
+
+```bash
+npm test              # run all tests
+npm run test:ui       # interactive UI mode
+npm run test:headed   # run with visible browser
+npm run test:debug    # step-by-step debug mode
+```
+
+**Test structure:**
+
+| File | Coverage |
+|------|----------|
+| `tests/auth.setup.ts` | WP login, saves session for other tests |
+| `tests/admin/pages.spec.ts` | All 4 admin pages, 8 settings tabs, CSS/JS assets, seoAi global |
+| `tests/metabox/editor.spec.ts` | Metabox rendering, 5 tab switching, metabox assets, seoAiPost global, field editing |
+| `tests/redirects/crud.spec.ts` | Redirects page, form fields, redirect creation |
+
+**Auth strategy:** Tests use Playwright's `storageState` pattern. `auth.setup.ts` logs in once and saves cookies to `playwright/.auth/user.json`. All other tests reuse the saved session.
+
+**Environment:** Tests target `http://localhost:8080` (Docker local dev). Credentials are in `.env.test` (gitignored).
+
+### Manual Testing
+
 - WordPress admin UI
 - REST API calls (use `wp_create_nonce('wp_rest')` for auth)
 - Browser DevTools for JS/CSS debugging
 
 ## Versioning
 
-**Current version: 0.0.2**
+**Current version: 0.0.3**
 
 This plugin uses semantic versioning (MAJOR.MINOR.PATCH). Every change MUST include a version bump:
 
