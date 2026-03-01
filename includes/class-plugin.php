@@ -186,6 +186,21 @@ final class Plugin {
 			$bulk_actions = new Admin\Bulk_Actions( $this->options, $this->post_meta );
 			$bulk_actions->register_hooks();
 		}
+
+		if ( class_exists( 'SeoAi\\Admin\\Post_Filters' ) ) {
+			$post_filters = new Admin\Post_Filters( $this->options );
+			$post_filters->register_hooks();
+		}
+
+		if ( class_exists( 'SeoAi\\Admin\\Quick_Edit' ) ) {
+			$quick_edit = new Admin\Quick_Edit( $this->options, $this->post_meta );
+			$quick_edit->register_hooks();
+		}
+
+		if ( class_exists( 'SeoAi\\Admin\\Csv_Import_Export' ) ) {
+			$csv = new Admin\Csv_Import_Export( $this->options, $this->post_meta );
+			$csv->register_hooks();
+		}
 	}
 
 	/**

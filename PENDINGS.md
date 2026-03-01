@@ -16,8 +16,8 @@ Tracking implementation of feature gap tickets from `docs/tickets/0-left/`.
 
 ## Phase 2 — High Priority Medium Features (M effort)
 
-- [ ] **#08 Quick Edit & Post List Filters** — Inline SEO editing in post list + filter by score/robots/schema
-- [ ] **#07 CSV Import/Export** — Bulk import/export of SEO metadata via CSV + migration from Yoast/AIOSEO
+- [x] **#08 Quick Edit & Post List Filters** — Inline SEO editing in post list + filter by score/robots/schema
+- [x] **#07 CSV Import/Export** — Bulk import/export of SEO metadata via CSV + migration from Yoast/AIOSEO
 
 ---
 

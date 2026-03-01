@@ -5,6 +5,19 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-03-01
+
+### Added
+
+- **Quick Edit SEO Fields** (#08): Inline SEO editing in the WordPress quick edit panel — edit SEO title, focus keyword, schema type, noindex, and cornerstone directly from the post list. Hidden data attributes populate fields from stored post meta via JS override of `inlineEditPost.edit`.
+- **Post List Filters** (#08): Three dropdown filters above post list tables — filter by SEO Score (Good/Needs Work/Poor/Not Analyzed), Robots status (Index/Noindex), and Schema type. Uses `pre_get_posts` with `meta_query`.
+- **CSV Export** (#07): Export all SEO metadata for any post type as CSV from Settings → Advanced. Includes post ID, title, URL, and all SEO fields (title, description, keyword, canonical, robots, schema, OG, Twitter, cornerstone, score).
+- **CSV Import** (#07): Import SEO metadata from CSV file. Auto-maps columns by header name. Requires `post_id` column. Reports updated/skipped/errors count. Validates post existence and user capabilities per row.
+
+### Changed
+
+- Plugin class `init_admin()` now registers Post_Filters, Quick_Edit, and Csv_Import_Export instances.
+
 ## [0.3.0] - 2026-03-01
 
 ### Added

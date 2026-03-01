@@ -180,6 +180,70 @@ $settings = get_option('seo_ai_settings', []);
 </div>
 
 <div class="seo-ai-card">
+    <h2>CSV Import / Export</h2>
+    <p class="description"><?php esc_html_e( 'Export or import SEO metadata for all posts of a given type.', 'seo-ai' ); ?></p>
+
+    <?php
+    // Show import result notices.
+    if ( isset( $_GET['csv_imported'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $notices = get_transient( 'seo_ai_csv_import_result' );
+        if ( is_array( $notices ) ) {
+            foreach ( $notices as $notice ) {
+                printf(
+                    '<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
+                    esc_attr( $notice['type'] ),
+                    esc_html( $notice['message'] )
+                );
+            }
+            delete_transient( 'seo_ai_csv_import_result' );
+        }
+    }
+    ?>
+
+    <table class="form-table">
+        <tr>
+            <th><?php esc_html_e( 'Export SEO Data', 'seo-ai' ); ?></th>
+            <td>
+                <form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <input type="hidden" name="page" value="seo-ai-settings" />
+                    <input type="hidden" name="seo_ai_csv_export" value="1" />
+                    <?php wp_nonce_field( 'seo_ai_csv_export', '_wpnonce', false ); ?>
+                    <select name="seo_ai_csv_post_type">
+                        <?php
+                        $default_pts  = [ 'post', 'page' ];
+                        $configured   = $settings['analysis_post_types'] ?? $default_pts;
+                        $export_types = (array) apply_filters( 'seo_ai/post_types', $configured );
+                        foreach ( $export_types as $pt ) :
+                            $obj = get_post_type_object( $pt );
+                            ?>
+                            <option value="<?php echo esc_attr( $pt ); ?>">
+                                <?php echo esc_html( $obj ? $obj->labels->singular_name : $pt ); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="button"><?php esc_html_e( 'Export CSV', 'seo-ai' ); ?></button>
+                </form>
+                <p class="description"><?php esc_html_e( 'Downloads a CSV with post ID, title, URL, and all SEO fields.', 'seo-ai' ); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><?php esc_html_e( 'Import SEO Data', 'seo-ai' ); ?></th>
+            <td>
+                <form method="post" enctype="multipart/form-data" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <input type="hidden" name="seo_ai_csv_import" value="1" />
+                    <?php wp_nonce_field( 'seo_ai_csv_import' ); ?>
+                    <input type="file" name="seo_ai_csv_file" accept=".csv" required />
+                    <button type="submit" class="button"><?php esc_html_e( 'Import CSV', 'seo-ai' ); ?></button>
+                </form>
+                <p class="description">
+                    <?php esc_html_e( 'CSV must have a "post_id" column. Recognized fields: title, description, focus_keyword, canonical, robots, schema_type, og_title, og_description, og_image, twitter_title, twitter_description, cornerstone.', 'seo-ai' ); ?>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="seo-ai-card">
     <h2>Custom AI Prompts</h2>
     <p class="description">Override the default AI prompts used for SEO optimization. Leave empty to use defaults.</p>
     <table class="form-table">
