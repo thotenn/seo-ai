@@ -42,9 +42,9 @@ Tracking implementation of feature gap tickets from `docs/tickets/0-left/`.
 
 ## Phase 5 — Extra Large Features (XL effort)
 
-- [ ] **#06 WooCommerce Integration** — ProductGroup schema, GTIN fields, stock filtering
-- [ ] **#01 Google Search Console & Analytics** — GSC API, keyword tracking, traffic analytics, email reports
-- [ ] **#05 Local SEO / Multi-Location** — LocalBusiness schema, multi-location CPT, KML export
+- [x] **#06 WooCommerce Integration** — ProductGroup schema, GTIN fields, stock filtering
+- [x] **#01 Google Search Console & Analytics** — GSC API, keyword tracking, traffic analytics, email reports
+- [x] **#05 Local SEO / Multi-Location** — LocalBusiness schema, multi-location CPT, KML export
 
 ---
 

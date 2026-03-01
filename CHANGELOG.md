@@ -5,6 +5,20 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-03-01
+
+### Added
+
+- **WooCommerce SEO Integration** (#06): Enhanced Product schema with GTIN/ISBN/MPN/brand fields from custom meta box on product edit screen. Automatic WC product data extraction (price, stock, images, reviews) into schema. ProductGroup schema for variable products with offers per variation. ItemList schema for shop and category archive pages. Auto-noindex for hidden products. Removes WC built-in structured data to prevent duplicates. Module only activates when WooCommerce is present.
+- **Analytics & Keyword Tracking** (#01): Custom `seo_ai_keyword_tracking` database table for daily keyword snapshots. Daily WP-Cron job captures focus keyword and SEO score for all analyzed posts. One snapshot per post per day (UNIQUE constraint). Query methods: `get_post_history()` for score trends, `get_top_posts()` ranked by latest score, `get_declining_posts()` comparing recent vs prior averages, `get_health_summary()` with total/analyzed/avg score/score distribution. Configurable data retention (default 90 days). Auto-cleanup via cron.
+- **Local SEO** (#05): LocalBusiness schema support with 19 sub-types (Restaurant, MedicalBusiness, LegalService, etc.). Hooks into `seo_ai/schema/organization` filter to upgrade Organization to LocalBusiness variant. Structured PostalAddress, GeoCoordinates, OpeningHoursSpecification per weekday. Price range, payment accepted, currencies accepted fields. All settings-driven via Options helper (`local_business_type`, `local_latitude`, `local_longitude`, `local_hours_{day}_open/close`, etc.).
+
+### Changed
+
+- Module Manager now registers 3 new modules: `woocommerce` (default off), `local_seo` (default off), `analytics` (default off).
+- Activator creates `seo_ai_keyword_tracking` table via `dbDelta()`.
+- Uninstall drops `seo_ai_keyword_tracking` table and deletes `seo_ai_indexnow_key` option.
+
 ## [0.6.0] - 2026-03-01
 
 ### Added

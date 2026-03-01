@@ -101,7 +101,7 @@ PHP template files in `includes/admin/views/`. Variables are injected by the Adm
 - Colors: primary `#2563eb`, success `#16a34a`, warning `#f59e0b`, error `#dc2626`
 
 ### Database
-- Two custom tables: `{prefix}seo_ai_redirects`, `{prefix}seo_ai_404_log`
+- Four custom tables: `{prefix}seo_ai_redirects`, `{prefix}seo_ai_404_log`, `{prefix}seo_ai_activity_log`, `{prefix}seo_ai_keyword_tracking`
 - Created via `dbDelta()` in Activator
 - Dropped in `uninstall.php`
 
@@ -199,7 +199,7 @@ npm run test:debug    # step-by-step debug mode
 
 ## Versioning
 
-**Current version: 0.6.0**
+**Current version: 0.7.0**
 
 This plugin uses semantic versioning (MAJOR.MINOR.PATCH). Every change MUST include a version bump:
 

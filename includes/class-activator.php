@@ -106,11 +106,28 @@ class Activator {
 			KEY created_at (created_at)
 		) {$charset_collate};";
 
+
+		$keyword_table = $wpdb->prefix . 'seo_ai_keyword_tracking';
+
+		$sql_keyword_tracking = "CREATE TABLE {$keyword_table} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			post_id bigint(20) unsigned NOT NULL,
+			focus_keyword varchar(255) NOT NULL DEFAULT '',
+			seo_score smallint(3) unsigned DEFAULT NULL,
+			snapshot_date date NOT NULL,
+			created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			UNIQUE KEY post_date (post_id, snapshot_date),
+			KEY focus_keyword (focus_keyword(191)),
+			KEY snapshot_date (snapshot_date)
+		) {$charset_collate};";
+
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		dbDelta( $sql_redirects );
 		dbDelta( $sql_404_log );
 		dbDelta( $sql_activity_log );
+		dbDelta( $sql_keyword_tracking );
 	}
 
 	/**

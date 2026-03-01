@@ -176,6 +176,33 @@ class Module_Manager {
 					'SeoAi\\Modules\\Sitemap\\News_Sitemap',
 				],
 			],
+			[
+				'id'          => 'woocommerce',
+				'name'        => __( 'WooCommerce SEO', 'seo-ai' ),
+				'description' => __( 'Enhanced Product schema, GTIN/ISBN fields, and WooCommerce-specific SEO features.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Woocommerce\\Woocommerce',
+				],
+			],
+			[
+				'id'          => 'local_seo',
+				'name'        => __( 'Local SEO', 'seo-ai' ),
+				'description' => __( 'LocalBusiness schema, geo coordinates, opening hours, and multi-location support.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Local_Seo\\Local_Seo',
+				],
+			],
+			[
+				'id'          => 'analytics',
+				'name'        => __( 'Analytics & Keyword Tracking', 'seo-ai' ),
+				'description' => __( 'Track keyword rankings over time, SEO score history, and identify declining posts.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Analytics\\Analytics',
+				],
+			],
 		];
 	}
 

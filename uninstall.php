@@ -35,6 +35,11 @@ $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_redirects" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_404_log" );
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_activity_log" );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_keyword_tracking" );
+
+// Delete IndexNow key option.
+delete_option( 'seo_ai_indexnow_key' );
 
 // Remove custom capabilities from all roles.
 $capabilities = [
