@@ -1,5 +1,19 @@
 # Configuración General
 
+## Menú de Administración
+
+El plugin registra las siguientes páginas en el menú **SEO AI**:
+
+| Página | Slug | Descripción |
+|--------|------|-------------|
+| Dashboard | `seo-ai` | Panel principal con hero card, progreso de optimización, stats y actividad reciente |
+| Settings | `seo-ai-settings` | Configuración del plugin (8 pestañas) |
+| Redirects | `seo-ai-redirects` | Gestión de redirecciones URL |
+| 404 Log | `seo-ai-404-log` | Monitor de errores 404 |
+| Activity Log | `seo-ai-logs` | Historial de todas las operaciones del plugin |
+
+---
+
 ## Página de Configuración
 
 Accede a **SEO AI → Configuración** en el panel de administración. La página está organizada en pestañas:
@@ -122,4 +136,4 @@ Ver [Sitemap y Robots](09-sitemap-y-robots.md) para detalles completos.
 
 ---
 
-**Anterior:** [Optimización Masiva](04-optimizacion-masiva.md) · **Siguiente:** [Redes Sociales](06-redes-sociales.md)
+**Anterior:** [Optimización Masiva](04-optimizacion-masiva.md) · **Siguiente:** [Redes Sociales](06-redes-sociales.md) · **Ver también:** [Activity Log](10-activity-log.md)

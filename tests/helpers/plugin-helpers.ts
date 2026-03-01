@@ -3,10 +3,51 @@ import { type Page, expect } from '@playwright/test';
 /** Navigate to one of the SEO AI admin pages. */
 export async function navigateToSeoAiPage(
   page: Page,
-  slug: 'seo-ai' | 'seo-ai-settings' | 'seo-ai-redirects' | 'seo-ai-404-log' = 'seo-ai'
+  slug: 'seo-ai' | 'seo-ai-settings' | 'seo-ai-redirects' | 'seo-ai-404-log' | 'seo-ai-logs' = 'seo-ai'
 ) {
   await page.goto(`/wp-admin/admin.php?page=${slug}`);
   await expect(page.locator('.seo-ai-header')).toBeVisible();
+}
+
+/** Get a REST API nonce from the current admin page context. */
+export async function getRestNonce(page: Page): Promise<string> {
+  await page.goto('/wp-admin/');
+  await page.waitForLoadState('domcontentloaded');
+
+  const nonce = await page.evaluate(() => {
+    return (window as any).wpApiSettings?.nonce as string | undefined;
+  });
+
+  if (nonce) return nonce;
+
+  return await page.evaluate(async () => {
+    const res = await fetch('/wp-admin/admin-ajax.php?action=rest-nonce', {
+      credentials: 'same-origin',
+    });
+    return res.text();
+  });
+}
+
+/** Make a REST API call and return the parsed JSON. */
+export async function restApi(
+  page: Page,
+  method: 'GET' | 'POST' | 'DELETE',
+  endpoint: string,
+  data?: Record<string, unknown>,
+  nonce?: string
+) {
+  const restNonce = nonce || await getRestNonce(page);
+  const url = `/wp-json/seo-ai/v1${endpoint}`;
+  const options: Parameters<typeof page.request.fetch>[1] = {
+    method,
+    headers: { 'X-WP-Nonce': restNonce },
+  };
+
+  if (data && (method === 'POST' || method === 'DELETE')) {
+    options.data = data;
+  }
+
+  return page.request.fetch(url, options);
 }
 
 /**

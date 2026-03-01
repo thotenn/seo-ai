@@ -11,6 +11,7 @@ test.describe('Admin Pages', () => {
     { slug: 'seo-ai-settings', label: 'Settings', hasVersion: true },
     { slug: 'seo-ai-redirects', label: 'Redirects', hasVersion: false },
     { slug: 'seo-ai-404-log', label: '404 Log', hasVersion: false },
+    { slug: 'seo-ai-logs', label: 'Activity Log', hasVersion: false },
   ] as const;
 
   for (const p of pages) {
@@ -53,6 +54,8 @@ test.describe('Admin Assets', () => {
 
     await expectAssetLoaded(page, 'admin.css');
     await expectAssetLoaded(page, 'admin.js');
+    await expectAssetLoaded(page, 'dashboard.css');
+    await expectAssetLoaded(page, 'dashboard.js');
   });
 
   test('settings assets load on settings page', async ({ page }) => {
@@ -64,8 +67,25 @@ test.describe('Admin Assets', () => {
     await expectAssetLoaded(page, 'settings.js');
   });
 
+  test('dashboard CSS loads on activity log page', async ({ page }) => {
+    await navigateToSeoAiPage(page, 'seo-ai-logs');
+
+    await expectAssetLoaded(page, 'admin.css');
+    await expectAssetLoaded(page, 'dashboard.css');
+  });
+
   test('seoAi global is present with expected properties', async ({ page }) => {
     await navigateToSeoAiPage(page, 'seo-ai');
     await expectSeoAiGlobal(page);
+  });
+
+  test('seoAi global includes postTypeLabels on dashboard', async ({ page }) => {
+    await navigateToSeoAiPage(page, 'seo-ai');
+
+    const hasLabels = await page.evaluate(() => {
+      const g = (window as any).seoAi;
+      return g && typeof g.postTypeLabels === 'object';
+    });
+    expect(hasLabels).toBe(true);
   });
 });

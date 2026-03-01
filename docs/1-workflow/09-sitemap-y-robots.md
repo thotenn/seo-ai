@@ -91,4 +91,4 @@ Sitemap: https://tusitio.com/sitemap.xml
 
 ---
 
-**Anterior:** [Redirecciones](08-redirecciones.md)
+**Anterior:** [Redirecciones](08-redirecciones.md) · **Siguiente:** [Activity Log](10-activity-log.md)

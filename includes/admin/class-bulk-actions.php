@@ -222,6 +222,18 @@ final class Bulk_Actions {
 			}
 		}
 
+		// Log the bulk operation.
+		if ( $count > 0 && class_exists( 'SeoAi\\Activity_Log' ) ) {
+			\SeoAi\Activity_Log::log( 'info', 'bulk_optimize', sprintf(
+				/* translators: %d: number of posts */
+				__( 'Queued %d posts for bulk AI optimization', 'seo-ai' ),
+				$count
+			), [
+				'post_ids' => array_map( 'intval', $post_ids ),
+				'count'    => $count,
+			] );
+		}
+
 		return $count;
 	}
 

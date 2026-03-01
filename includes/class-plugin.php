@@ -53,6 +53,8 @@ final class Plugin {
 		'SeoAi\\Rest\\Settings_Controller',
 		'SeoAi\\Rest\\Redirect_Controller',
 		'SeoAi\\Rest\\Provider_Controller',
+		'SeoAi\\Rest\\Queue_Controller',
+		'SeoAi\\Rest\\Log_Controller',
 	];
 
 	/**

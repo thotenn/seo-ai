@@ -4,6 +4,7 @@ namespace SeoAi;
 defined( 'ABSPATH' ) || exit;
 
 use SeoAi\Helpers\Capability;
+use SeoAi\Activity_Log;
 
 /**
  * Plugin activation handler.
@@ -26,6 +27,10 @@ class Activator {
 		self::store_version();
 		Capability::grant_defaults();
 		flush_rewrite_rules();
+
+		Activity_Log::log( 'info', 'settings_change', 'Plugin activated', [
+			'version' => SEO_AI_VERSION,
+		] );
 
 		/**
 		 * Fires after the SEO AI plugin is activated.
@@ -80,10 +85,27 @@ class Activator {
 			KEY last_hit (last_hit)
 		) {$charset_collate};";
 
+		$activity_table = $wpdb->prefix . 'seo_ai_activity_log';
+
+		$sql_activity_log = "CREATE TABLE {$activity_table} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			level varchar(20) NOT NULL DEFAULT 'info',
+			operation varchar(100) NOT NULL,
+			message text NOT NULL,
+			context longtext,
+			user_id bigint(20) unsigned DEFAULT NULL,
+			created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY level (level),
+			KEY operation (operation),
+			KEY created_at (created_at)
+		) {$charset_collate};";
+
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		dbDelta( $sql_redirects );
 		dbDelta( $sql_404_log );
+		dbDelta( $sql_activity_log );
 	}
 
 	/**

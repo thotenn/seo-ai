@@ -33,6 +33,8 @@ $wpdb->query(
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_redirects" );
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_404_log" );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}seo_ai_activity_log" );
 
 // Remove custom capabilities from all roles.
 $capabilities = [

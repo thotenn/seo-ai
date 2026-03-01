@@ -1,0 +1,597 @@
+/**
+ * SEO AI Dashboard Styles
+ *
+ * Hero card, optimization wizard modal, progress bar, terminal log,
+ * activity list, and step indicator.
+ *
+ * @since 0.1.0
+ */
+
+/* =========================================================================
+ * Hero Card
+ * ========================================================================= */
+
+.seo-ai-hero-card {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 32px;
+	margin-bottom: 16px;
+	background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+	border-radius: 8px;
+	color: #fff;
+}
+
+.seo-ai-hero-content h2 {
+	margin: 0 0 8px;
+	font-size: 22px;
+	color: #fff;
+}
+
+.seo-ai-hero-content p {
+	margin: 0 0 16px;
+	font-size: 14px;
+	opacity: 0.9;
+}
+
+.seo-ai-hero-btn {
+	background: rgba(255, 255, 255, 0.2) !important;
+	color: #fff !important;
+	border: 2px solid #fff !important;
+	font-weight: 600 !important;
+	padding: 8px 24px !important;
+	font-size: 14px !important;
+	border-radius: 4px !important;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.seo-ai-hero-btn:hover {
+	background: rgba(255, 255, 255, 0.35) !important;
+}
+
+.seo-ai-hero-stats {
+	display: flex;
+	gap: 32px;
+}
+
+.seo-ai-hero-stat {
+	text-align: center;
+}
+
+.seo-ai-hero-stat-value {
+	display: block;
+	font-size: 28px;
+	font-weight: 700;
+}
+
+.seo-ai-hero-stat-label {
+	display: block;
+	font-size: 12px;
+	opacity: 0.8;
+	margin-top: 2px;
+}
+
+/* =========================================================================
+ * Modal
+ * ========================================================================= */
+
+.seo-ai-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.seo-ai-modal-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.seo-ai-modal-content {
+	position: relative;
+	background: #fff;
+	border-radius: 8px;
+	width: 90%;
+	max-width: 700px;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.seo-ai-modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 24px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.seo-ai-modal-header h2 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.seo-ai-modal-close {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: #6b7280;
+	padding: 0 4px;
+	line-height: 1;
+}
+
+.seo-ai-modal-close:hover {
+	color: #111;
+}
+
+.seo-ai-modal-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 24px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.seo-ai-modal-footer-right {
+	display: flex;
+	gap: 8px;
+}
+
+/* =========================================================================
+ * Step Indicator
+ * ========================================================================= */
+
+.seo-ai-steps {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px 24px;
+	gap: 0;
+}
+
+.seo-ai-step {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+
+.seo-ai-step-dot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: #e5e7eb;
+	color: #6b7280;
+	font-weight: 600;
+	font-size: 14px;
+	transition: all 0.2s;
+}
+
+.seo-ai-step.active .seo-ai-step-dot {
+	background: #2563eb;
+	color: #fff;
+}
+
+.seo-ai-step.completed .seo-ai-step-dot {
+	background: #16a34a;
+	color: #fff;
+}
+
+.seo-ai-step-label {
+	font-size: 11px;
+	color: #6b7280;
+}
+
+.seo-ai-step.active .seo-ai-step-label {
+	color: #2563eb;
+	font-weight: 600;
+}
+
+.seo-ai-step.completed .seo-ai-step-label {
+	color: #16a34a;
+}
+
+.seo-ai-step-line {
+	flex: 1;
+	height: 2px;
+	background: #e5e7eb;
+	min-width: 40px;
+	margin: 0 8px;
+	margin-bottom: 18px;
+}
+
+/* =========================================================================
+ * Wizard Steps Container
+ * ========================================================================= */
+
+.seo-ai-wizard-step {
+	padding: 16px 24px;
+	overflow-y: auto;
+	flex: 1;
+	min-height: 200px;
+	max-height: 55vh;
+}
+
+/* =========================================================================
+ * Step 1: Post List
+ * ========================================================================= */
+
+.seo-ai-wizard-filters {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.seo-ai-wizard-filters input,
+.seo-ai-wizard-filters select {
+	flex: 1;
+}
+
+.seo-ai-post-list-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid #e5e7eb;
+	font-size: 13px;
+}
+
+.seo-ai-post-list {
+	max-height: 350px;
+	overflow-y: auto;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+}
+
+.seo-ai-post-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-bottom: 1px solid #f3f4f6;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.seo-ai-post-item:last-child {
+	border-bottom: none;
+}
+
+.seo-ai-post-item:hover {
+	background: #f9fafb;
+}
+
+.seo-ai-post-title {
+	flex: 1;
+	font-size: 13px;
+}
+
+.seo-ai-post-type {
+	font-size: 11px;
+	color: #6b7280;
+	background: #f3f4f6;
+	padding: 2px 8px;
+	border-radius: 3px;
+}
+
+.seo-ai-post-score {
+	font-size: 12px;
+	font-weight: 600;
+	min-width: 28px;
+	text-align: center;
+}
+
+.seo-ai-score-good { color: #16a34a; }
+.seo-ai-score-warning { color: #f59e0b; }
+.seo-ai-score-low { color: #dc2626; }
+
+.seo-ai-loading,
+.seo-ai-empty {
+	padding: 32px;
+	text-align: center;
+	color: #6b7280;
+}
+
+/* =========================================================================
+ * Pagination
+ * ========================================================================= */
+
+.seo-ai-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 0;
+	font-size: 12px;
+}
+
+.seo-ai-pag-info {
+	color: #6b7280;
+}
+
+.seo-ai-pag-current {
+	font-weight: 600;
+}
+
+/* =========================================================================
+ * Step 2: Field Options
+ * ========================================================================= */
+
+.seo-ai-field-options {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.seo-ai-field-option {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 12px;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: border-color 0.15s, background 0.15s;
+}
+
+.seo-ai-field-option:hover {
+	border-color: #2563eb;
+	background: #f8faff;
+}
+
+.seo-ai-field-option input {
+	margin-top: 2px;
+}
+
+.seo-ai-field-name {
+	display: block;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.seo-ai-field-desc {
+	display: block;
+	font-size: 12px;
+	color: #6b7280;
+	margin-top: 2px;
+}
+
+/* =========================================================================
+ * Step 3: Review
+ * ========================================================================= */
+
+.seo-ai-review-summary {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+	padding: 24px 0;
+}
+
+.seo-ai-review-stat {
+	text-align: center;
+}
+
+.seo-ai-review-number {
+	display: block;
+	font-size: 32px;
+	font-weight: 700;
+	color: #2563eb;
+}
+
+.seo-ai-review-x {
+	font-size: 20px;
+	color: #9ca3af;
+}
+
+.seo-ai-review-fields {
+	margin-bottom: 12px;
+}
+
+.seo-ai-review-post-titles {
+	max-height: 150px;
+	overflow-y: auto;
+	margin: 0;
+	padding: 12px 12px 12px 28px;
+	background: #f9fafb;
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.seo-ai-review-post-titles li {
+	margin-bottom: 4px;
+}
+
+.seo-ai-review-warning {
+	margin-top: 16px;
+	padding: 12px;
+	background: #fef3c7;
+	border: 1px solid #f59e0b;
+	border-radius: 4px;
+	font-size: 13px;
+	color: #92400e;
+}
+
+/* =========================================================================
+ * Step 4: Progress
+ * ========================================================================= */
+
+.seo-ai-progress-header {
+	display: flex;
+	justify-content: space-between;
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+
+.seo-ai-progress-bar {
+	height: 20px;
+	background: #e5e7eb;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.seo-ai-progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, #2563eb, #7c3aed);
+	border-radius: 10px;
+	transition: width 0.3s ease;
+}
+
+/* =========================================================================
+ * Terminal Log
+ * ========================================================================= */
+
+.seo-ai-terminal {
+	background: #1f2937;
+	color: #d1d5db;
+	font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+	font-size: 12px;
+	padding: 16px;
+	border-radius: 6px;
+	max-height: 300px;
+	overflow-y: auto;
+	margin-top: 16px;
+	line-height: 1.6;
+}
+
+.seo-ai-log-line {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.seo-ai-log-time {
+	color: #6b7280;
+}
+
+.seo-ai-log-debug { color: #9ca3af; }
+.seo-ai-log-info  { color: #60a5fa; }
+.seo-ai-log-warn  { color: #fbbf24; }
+.seo-ai-log-error { color: #f87171; }
+
+/* =========================================================================
+ * Activity List
+ * ========================================================================= */
+
+.seo-ai-activity-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.seo-ai-activity-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 0;
+	border-bottom: 1px solid #f3f4f6;
+	font-size: 13px;
+}
+
+.seo-ai-activity-item:last-child {
+	border-bottom: none;
+}
+
+.seo-ai-activity-badge {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	padding: 2px 8px;
+	border-radius: 3px;
+	min-width: 42px;
+	text-align: center;
+}
+
+.seo-ai-activity-badge-info  { background: #dbeafe; color: #1e40af; }
+.seo-ai-activity-badge-warn  { background: #fef3c7; color: #92400e; }
+.seo-ai-activity-badge-error { background: #fee2e2; color: #991b1b; }
+.seo-ai-activity-badge-debug { background: #f3f4f6; color: #6b7280; }
+
+.seo-ai-activity-message {
+	flex: 1;
+}
+
+.seo-ai-activity-time {
+	color: #9ca3af;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.seo-ai-activity-expand {
+	background: none;
+	border: 1px solid #e5e7eb;
+	border-radius: 3px;
+	padding: 0 6px;
+	cursor: pointer;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.seo-ai-activity-expand:hover {
+	background: #f3f4f6;
+}
+
+.seo-ai-activity-detail {
+	margin: 8px 0 0 52px;
+	padding: 8px 12px;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+	font-size: 11px;
+	font-family: monospace;
+	max-height: 200px;
+	overflow-y: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+/* =========================================================================
+ * Responsive
+ * ========================================================================= */
+
+@media (max-width: 782px) {
+	.seo-ai-hero-card {
+		flex-direction: column;
+		gap: 20px;
+		text-align: center;
+	}
+
+	.seo-ai-hero-stats {
+		gap: 20px;
+	}
+
+	.seo-ai-modal-content {
+		width: 95%;
+		max-height: 95vh;
+	}
+
+	.seo-ai-wizard-filters {
+		flex-direction: column;
+	}
+
+	.seo-ai-review-summary {
+		gap: 10px;
+	}
+
+	.seo-ai-review-number {
+		font-size: 24px;
+	}
+}

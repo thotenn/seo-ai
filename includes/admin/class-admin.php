@@ -144,6 +144,16 @@ final class Admin {
 			'seo-ai-404-log',
 			[ $this, 'render_404_page' ]
 		);
+
+		// Activity Log submenu.
+		$this->page_hooks['logs'] = add_submenu_page(
+			'seo-ai',
+			__( 'Activity Log', 'seo-ai' ),
+			__( 'Activity Log', 'seo-ai' ),
+			$manage_cap,
+			'seo-ai-logs',
+			[ $this, 'render_logs_page' ]
+		);
 	}
 
 	/**
@@ -162,6 +172,7 @@ final class Admin {
 			'seo-ai_page_seo-ai-settings',
 			'seo-ai_page_seo-ai-redirects',
 			'seo-ai_page_seo-ai-404-log',
+			'seo-ai_page_seo-ai-logs',
 		];
 
 		$is_plugin_page = in_array( $hook, $plugin_pages, true );
@@ -189,12 +200,47 @@ final class Admin {
 		);
 
 		wp_localize_script( 'seo-ai-admin', 'seoAi', [
-			'restUrl'  => esc_url_raw( rest_url( 'seo-ai/v1/' ) ),
-			'nonce'    => wp_create_nonce( 'wp_rest' ),
-			'adminUrl' => esc_url_raw( admin_url() ),
-			'version'  => SEO_AI_VERSION,
-			'settings' => $this->get_script_settings(),
+			'restUrl'        => esc_url_raw( rest_url( 'seo-ai/v1/' ) ),
+			'nonce'          => wp_create_nonce( 'wp_rest' ),
+			'adminUrl'       => esc_url_raw( admin_url() ),
+			'version'        => SEO_AI_VERSION,
+			'settings'       => $this->get_script_settings(),
+			'postTypeLabels' => $this->get_post_type_labels(),
 		] );
+
+		// ---- Dashboard page ----
+
+		if ( 'toplevel_page_seo-ai' === $hook ) {
+			wp_enqueue_style(
+				'seo-ai-dashboard',
+				SEO_AI_URL . 'assets/css/dashboard.css',
+				[ 'seo-ai-admin' ],
+				SEO_AI_VERSION
+			);
+
+			wp_enqueue_script(
+				'seo-ai-dashboard',
+				SEO_AI_URL . 'assets/js/dashboard.js',
+				[ 'seo-ai-admin', 'jquery' ],
+				SEO_AI_VERSION,
+				true
+			);
+
+			wp_localize_script( 'seo-ai-dashboard', 'seoAiDash', [
+				'postTypeLabels' => $this->get_post_type_labels(),
+			] );
+		}
+
+		// ---- Activity Log page ----
+
+		if ( 'seo-ai_page_seo-ai-logs' === $hook ) {
+			wp_enqueue_style(
+				'seo-ai-dashboard',
+				SEO_AI_URL . 'assets/css/dashboard.css',
+				[ 'seo-ai-admin' ],
+				SEO_AI_VERSION
+			);
+		}
 
 		// ---- Settings page ----
 
@@ -520,6 +566,21 @@ final class Admin {
 	}
 
 	/**
+	 * Render the Activity Log admin page.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function render_logs_page(): void {
+		$view = SEO_AI_PATH . 'includes/admin/views/logs/main.php';
+
+		if ( file_exists( $view ) ) {
+			include $view;
+		}
+	}
+
+	/**
 	 * Sanitize metabox field data.
 	 *
 	 * Each field is sanitized according to its expected type.
@@ -702,5 +763,23 @@ final class Admin {
 			'keywordDensityMax'  => (float) $this->options->get( 'keyword_density_max', 3.0 ),
 			'minContentLength'   => (int) $this->options->get( 'min_content_length', 300 ),
 		];
+	}
+
+	/**
+	 * Get a map of post type slugs to human-readable labels.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_post_type_labels(): array {
+		$labels = [];
+
+		foreach ( $this->get_supported_post_types() as $pt ) {
+			$obj = get_post_type_object( $pt );
+			$labels[ $pt ] = $obj ? $obj->labels->singular_name : $pt;
+		}
+
+		return $labels;
 	}
 }

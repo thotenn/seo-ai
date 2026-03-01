@@ -8,6 +8,7 @@ Al activar SEO AI, el plugin configura automáticamente:
 
 - **`{prefix}seo_ai_redirects`** — Almacena redirecciones URL con columnas: `id`, `source_url`, `target_url`, `type`, `is_regex`, `hits`, `status`, `created_at`, `updated_at`.
 - **`{prefix}seo_ai_404_log`** — Registro de errores 404 con columnas: `id`, `url`, `referrer`, `user_agent`, `ip_address`, `hits`, `last_hit`, `created_at`.
+- **`{prefix}seo_ai_activity_log`** — Registro de actividad del plugin con columnas: `id`, `level`, `operation`, `message`, `context` (JSON), `user_id`, `created_at`. Índices en `level`, `operation` y `created_at`.
 
 ### Capacidades (Capabilities)
 
@@ -74,10 +75,12 @@ Para configurar un proveedor:
 ## Primeros pasos después de activar
 
 1. **Configurar proveedor de IA** — Ve a Configuración → Proveedores y configura al menos un proveedor.
-2. **Abrir un post** — Edita cualquier entrada o página existente.
-3. **Ver el metabox SEO AI** — Aparece debajo del editor con 5 pestañas: SEO, Readability, Social, Schema y Advanced.
-4. **Definir el keyword principal** — En la pestaña SEO, ingresa la palabra clave de enfoque.
-5. **Revisar los análisis** — El plugin analiza automáticamente tu contenido y muestra puntuaciones.
+2. **Explorar el Dashboard** — El Dashboard muestra una tarjeta hero con el conteo de posts sin optimizar y el botón "Start Optimization" para lanzar el asistente de optimización.
+3. **Abrir un post** — Edita cualquier entrada o página existente.
+4. **Ver el metabox SEO AI** — Aparece debajo del editor con 5 pestañas: SEO, Readability, Social, Schema y Advanced.
+5. **Definir el keyword principal** — En la pestaña SEO, ingresa la palabra clave de enfoque.
+6. **Revisar los análisis** — El plugin analiza automáticamente tu contenido y muestra puntuaciones.
+7. **Consultar el Activity Log** — En **SEO AI → Activity Log** puedes ver el historial de todas las operaciones realizadas por el plugin.
 
 ---
 

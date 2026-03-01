@@ -5,6 +5,38 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-03-01
+
+### Fixed
+
+- **Provider selection bug**: All 5 AI providers (`get_setting()`) were reading from `$option['providers'][id]` but the Settings Controller saves at `$option[id]`. This caused `is_configured()` to always return false for cloud providers, making the system fall back to Ollama regardless of user configuration.
+- **Provider Manager `test_provider()`**: Fixed same data path mismatch when temporarily injecting override settings for connection testing.
+
+## [0.1.0] - 2026-03-01
+
+### Added
+
+- **Optimization Wizard**: 4-step modal wizard (Select Posts → Configure Fields → Review → Progress) launched from the dashboard hero card
+- **Activity Log system**: New `seo_ai_activity_log` database table for tracking all plugin operations
+- **Activity Log class** (`includes/class-activity-log.php`): Static methods for logging, querying, and cleaning up entries
+- **Queue Controller** (`includes/rest/class-queue-controller.php`): REST endpoints for wizard optimization queue — `GET /queue/posts`, `POST /queue/start`, `POST /queue/process-next`, `POST /queue/cancel`
+- **Log Controller** (`includes/rest/class-log-controller.php`): REST endpoints for activity log — `GET /logs`, `DELETE /logs`
+- **Dashboard hero card**: Gradient banner with unoptimized post count and "Start Optimization" button
+- **Dashboard progress card**: Shows active optimization queue status with resume capability
+- **Dashboard recent activity**: Last 10 log entries with level badges, timestamps, and expandable context
+- **Activity Log admin page**: Full log viewer under SEO AI → Activity Log with level/operation/search filters, pagination, and "Clear Old Logs" action
+- **Dashboard CSS** (`assets/css/dashboard.css`): Styles for hero card, modal, step indicator, post list, progress bar, terminal log, activity list
+- **Dashboard JS** (`assets/js/dashboard.js`): Wizard state machine, AJAX polling (500ms), real-time progress log, post search/filter/pagination
+- **Auto-SEO logging**: Activity log entries created on auto-SEO success and failure
+- **Bulk actions logging**: Activity log entries created when bulk optimization is queued
+- **Plugin activation logging**: "Plugin activated" entry written on activation
+
+### Changed
+
+- Dashboard view rewritten with hero card, progress section, and activity log
+- Admin class updated to register Activity Log submenu and enqueue dashboard-specific assets
+- `seoAi` JS global now includes `postTypeLabels` map
+
 ## [0.0.3] - 2026-02-28
 
 ### Added

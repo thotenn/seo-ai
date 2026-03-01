@@ -244,7 +244,7 @@ final class OpenRouter_Provider implements Provider_Interface {
 	 */
 	private function get_setting(string $key, mixed $default = null): mixed {
 		$all_settings      = get_option(Provider_Manager::OPTION_KEY, []);
-		$provider_settings = $all_settings['providers'][self::ID] ?? [];
+		$provider_settings = $all_settings[self::ID] ?? [];
 
 		return $provider_settings[$key] ?? $default;
 	}

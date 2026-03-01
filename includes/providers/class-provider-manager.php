@@ -189,9 +189,9 @@ final class Provider_Manager {
 
 		// If override settings were provided, temporarily inject them.
 		if (! empty($settings)) {
-			$current                    = $this->get_settings();
-			$current['providers'][$id]  = array_merge(
-				$current['providers'][$id] ?? [],
+			$current         = $this->get_settings();
+			$current[$id]    = array_merge(
+				$current[$id] ?? [],
 				$settings
 			);
 
@@ -206,7 +206,7 @@ final class Provider_Manager {
 			// We keep the settings if the test succeeds, revert if it fails.
 			if (! $result['success']) {
 				// Remove the override — restore what was there before.
-				$original['providers'][$id] = ($this->get_settings()['providers'][$id] ?? []);
+				$original[$id] = ($this->get_settings()[$id] ?? []);
 			}
 
 			return $result;

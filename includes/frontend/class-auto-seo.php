@@ -271,6 +271,30 @@ final class Auto_SEO {
 				}
 			}
 
+			// Log to activity log.
+			if ( class_exists( 'SeoAi\\Activity_Log' ) ) {
+				\SeoAi\Activity_Log::log(
+					$success ? 'info' : 'warn',
+					'auto_seo',
+					$success
+						? sprintf(
+							/* translators: %s: post title */
+							__( 'Auto-optimized "%s"', 'seo-ai' ),
+							$post->post_title
+						)
+						: sprintf(
+							/* translators: %s: post title */
+							__( 'Auto-SEO produced no results for "%s"', 'seo-ai' ),
+							$post->post_title
+						),
+					[
+						'post_id' => $post_id,
+						'fields'  => $enabled_fields,
+						'success' => $success,
+					]
+				);
+			}
+
 			/**
 			 * Fires after auto-SEO optimization completes.
 			 *
@@ -282,6 +306,19 @@ final class Auto_SEO {
 			 */
 			do_action( 'seo_ai/auto_seo_completed', $post_id, $success, $result ?? [] );
 		} catch ( \Throwable $e ) {
+			// Log to activity log.
+			if ( class_exists( 'SeoAi\\Activity_Log' ) ) {
+				\SeoAi\Activity_Log::log( 'error', 'auto_seo', sprintf(
+					/* translators: 1: post title, 2: error message */
+					__( 'Auto-SEO failed for "%1$s": %2$s', 'seo-ai' ),
+					$post->post_title,
+					$e->getMessage()
+				), [
+					'post_id' => $post_id,
+					'error'   => $e->getMessage(),
+				] );
+			}
+
 			// Log the error but do not break the save flow.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
