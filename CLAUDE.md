@@ -4,7 +4,7 @@ This file provides context for Claude Code when working on this project.
 
 ## Project Overview
 
-SEO AI is a WordPress plugin that provides comprehensive SEO optimization with AI-powered content generation. It supports 5 AI providers (OpenAI, Claude, Gemini, Ollama, OpenRouter) and features a modular architecture with 9 toggleable feature modules.
+SEO AI is a WordPress plugin that provides comprehensive SEO optimization with AI-powered content generation. It supports 5 AI providers (OpenAI, Claude, Gemini, Ollama, OpenRouter) and features a modular architecture with 16 toggleable feature modules.
 
 ## Tech Stack
 
@@ -72,8 +72,15 @@ PHP template files in `includes/admin/views/`. Variables are injected by the Adm
 | `includes/class-plugin.php` | Main singleton, hooks registration |
 | `includes/class-activator.php` | DB tables, default options, capabilities |
 | `includes/admin/class-admin.php` | All admin: menus, assets, metabox, widget |
-| `includes/modules/class-module-manager.php` | Module registry and lifecycle |
+| `includes/admin/class-quick-edit.php` | Quick edit SEO fields in post list |
+| `includes/admin/class-post-filters.php` | Post list filters (score, robots, schema) |
+| `includes/admin/class-csv-import-export.php` | CSV import/export of SEO metadata |
+| `includes/modules/class-module-manager.php` | Module registry and lifecycle (16 modules) |
 | `includes/providers/class-provider-manager.php` | AI provider registry |
+| `includes/rest/class-inline-ai-controller.php` | AI inline writing, content brief, link suggestions |
+| `includes/rest/class-competitor-controller.php` | Competitor analysis endpoints |
+| `includes/integrations/class-content-extractor.php` | ACF/Elementor/Divi content extraction |
+| `includes/integrations/class-bbpress.php` | bbPress QAPage schema |
 | `includes/frontend/class-frontend.php` | Frontend output orchestrator |
 | `uninstall.php` | Full data cleanup on plugin deletion |
 
@@ -112,6 +119,7 @@ PHP template files in `includes/admin/views/`. Variables are injected by the Adm
 | `seo_ai_settings` | All plugin settings (modules, templates, analysis config) |
 | `seo_ai_providers` | AI provider configs and active provider |
 | `seo_ai_version` | Installed plugin version |
+| `seo_ai_indexnow_key` | IndexNow API key (auto-generated 32-char hex) |
 
 ## Custom Capabilities
 
@@ -125,7 +133,7 @@ PHP template files in `includes/admin/views/`. Variables are injected by the Adm
 
 All prefixed with `_seo_ai_`:
 
-`title`, `description`, `focus_keyword`, `focus_keywords` (JSON), `canonical`, `robots` (JSON), `og_title`, `og_description`, `og_image`, `twitter_title`, `twitter_description`, `schema_type`, `schema_data` (JSON), `seo_score`, `readability_score`, `auto_seo`
+`title`, `description`, `focus_keyword`, `focus_keywords` (JSON), `canonical`, `robots` (JSON), `og_title`, `og_description`, `og_image`, `twitter_title`, `twitter_description`, `schema_type`, `schema_data` (JSON), `seo_score`, `readability_score`, `auto_seo`, `cornerstone`, `search_intent`, `news_exclude`, `schema_recipe` (JSON), `schema_job` (JSON), `link_suggestions` (JSON), `podcast_audio`, `podcast_duration`, `podcast_episode`, `podcast_season`
 
 ## Common Tasks
 
@@ -178,7 +186,7 @@ npm run test:headed   # run with visible browser
 npm run test:debug    # step-by-step debug mode
 ```
 
-**Test structure:**
+**Test structure (156 tests total):**
 
 | File | Coverage |
 |------|----------|
@@ -186,6 +194,13 @@ npm run test:debug    # step-by-step debug mode
 | `tests/admin/pages.spec.ts` | All 4 admin pages, 8 settings tabs, CSS/JS assets, seoAi global |
 | `tests/metabox/editor.spec.ts` | Metabox rendering, 5 tab switching, metabox assets, seoAiPost global, field editing |
 | `tests/redirects/crud.spec.ts` | Redirects page, form fields, redirect creation |
+| `tests/modules/module-registry.spec.ts` | Dashboard badges (16 modules), REST API module toggling |
+| `tests/post-list/filters-and-actions.spec.ts` | SEO filters, bulk actions, quick edit fields |
+| `tests/settings/advanced-tab.spec.ts` | CSV export/import, indexing, image SEO, breadcrumbs |
+| `tests/api/inline-ai.spec.ts` | Inline AI, content brief, link suggestions endpoints |
+| `tests/api/competitor.spec.ts` | Competitor analysis REST endpoints |
+| `tests/sitemaps/sitemap-settings.spec.ts` | XML/video/news sitemap settings fields |
+| `tests/editor/editor-ai.spec.ts` | Editor AI sidebar asset loading and globals |
 
 **Auth strategy:** Tests use Playwright's `storageState` pattern. `auth.setup.ts` logs in once and saves cookies to `playwright/.auth/user.json`. All other tests reuse the saved session.
 
@@ -219,6 +234,11 @@ Version guidelines:
 - `Provider_Manager` constructor takes **no arguments** -- it loads settings from `seo_ai_providers` option internally
 - Frontend module classes (`Open_Graph`, `Twitter_Cards`, `Schema_Manager`) live in `SeoAi\Modules\*` namespace, NOT `SeoAi\Frontend\*`
 - Module IDs use underscores (`meta_tags`, `open_graph`), not hyphens
+- The Activator defaults use **hyphens** (`content-analysis`, `meta-tags`) while Module_Manager IDs use **underscores** -- be careful when comparing
 - The `Options::get()` method returns from the `seo_ai_settings` option, not individual WP options
-- `Post_Meta` auto JSON-encodes/decodes `focus_keywords`, `robots`, `schema_data`
+- `Post_Meta` auto JSON-encodes/decodes `focus_keywords`, `robots`, `schema_data`, `schema_recipe`, `schema_job`, `link_suggestions`
 - Dashboard widget requires `seo_ai_view_reports` capability
+- `Indexing` module constructor requires `Options` argument but `Module_Manager::register_modules()` calls `new $class_name()` with no args -- do NOT enable `indexing` module via REST API or it will cause a PHP fatal error
+- WordPress REST API does NOT enforce `enum` validation when `sanitize_callback` is set on the same parameter
+- WordPress quick edit renders TWO `<tr class="inline-edit-row">` elements (hidden template + visible row) -- always scope to `#edit-{postId}` to avoid strict mode violations in Playwright
+- REST `$this->success()` wraps data as `{ success: true, data: {...} }` -- access response fields via `body.data.settings`, not `body.settings`
