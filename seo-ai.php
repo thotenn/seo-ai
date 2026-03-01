@@ -3,7 +3,7 @@
  * Plugin Name: SEO AI
  * Plugin URI:  https://github.com/thotenn/seo-ai
  * Description: Comprehensive SEO plugin with AI-powered optimization. Supports multiple AI providers including Ollama for local/free usage.
- * Version:     0.7.0
+ * Version:     0.8.0
  * Author:      Thotenn
  * Author URI:  https://thotenn.com
  * License:     GPL-2.0-or-later
@@ -17,7 +17,7 @@
 defined('ABSPATH') || exit;
 
 // Plugin constants
-define('SEO_AI_VERSION', '0.7.0');
+define('SEO_AI_VERSION', '0.8.0');
 define('SEO_AI_FILE', __FILE__);
 define('SEO_AI_PATH', plugin_dir_path(__FILE__));
 define('SEO_AI_URL', plugin_dir_url(__FILE__));

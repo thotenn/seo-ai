@@ -50,10 +50,10 @@ Tracking implementation of feature gap tickets from `docs/tickets/0-left/`.
 
 ## Phase 6 — Low Priority / Niche
 
-- [ ] **#10 Competitor Analysis** — Fetch & parse competitor URLs for SEO comparison
-- [ ] **#12 Podcast Support** — Podcast RSS feed, PodcastEpisode schema
-- [ ] **#16 ACF / Page Builder Integration** — Extract content from ACF, Elementor, Divi
-- [ ] **#17 bbPress Forum Integration** — QAPage schema for forum topics
+- [x] **#10 Competitor Analysis** — Fetch & parse competitor URLs for SEO comparison
+- [x] **#12 Podcast Support** — Podcast RSS feed, PodcastEpisode schema
+- [x] **#16 ACF / Page Builder Integration** — Extract content from ACF, Elementor, Divi
+- [x] **#17 bbPress Forum Integration** — QAPage schema for forum topics
 
 ---
 

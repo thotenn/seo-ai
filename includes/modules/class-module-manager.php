@@ -203,6 +203,15 @@ class Module_Manager {
 					'SeoAi\\Modules\\Analytics\\Analytics',
 				],
 			],
+			[
+				'id'          => 'podcast',
+				'name'        => __( 'Podcast', 'seo-ai' ),
+				'description' => __( 'Podcast RSS feed generation and PodcastEpisode schema for podcast content.', 'seo-ai' ),
+				'default'     => false,
+				'classes'     => [
+					'SeoAi\\Modules\\Podcast\\Podcast',
+				],
+			],
 		];
 	}
 

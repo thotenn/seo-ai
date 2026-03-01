@@ -5,6 +5,21 @@ All notable changes to the SEO AI plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-03-01
+
+### Added
+
+- **Competitor Analysis** (#10): Fetch and parse external competitor URLs to extract SEO metrics — title, meta description, heading structure (H1-H6), word count, internal/external link counts, image count with alt text coverage, and keyword density. Side-by-side comparison of own post vs competitor with AI-generated suggestions. REST endpoints `POST /competitor/analyze` and `POST /competitor/compare`. 24-hour transient caching and 5-minute rate limiting per URL.
+- **Podcast Support** (#12): Toggleable Podcast module with iTunes-compatible RSS feed at `/feed/podcast/`. Channel metadata (title, description, image, category, language) from settings. Episode data from post meta (`_seo_ai_podcast_audio`, `_seo_ai_podcast_duration`, `_seo_ai_podcast_episode`, `_seo_ai_podcast_season`). PodcastEpisode JSON-LD schema with AudioObject and PodcastSeries on singular posts with audio.
+- **ACF / Page Builder Integration** (#16): Content Extractor integration that aggregates content from ACF, Elementor, and Divi for SEO analysis via `seo_ai/content_for_analysis` filter. Recursive ACF field extraction (WYSIWYG, textarea, text, repeater, flexible content). ACF image extraction for sitemap. Elementor `_elementor_data` JSON parsing. Divi shortcode rendering and text extraction.
+- **bbPress Forum Integration** (#17): QAPage schema for bbPress forum topics via `seo_ai/schema/graph` filter. Question from topic content, answers from replies (up to 10). Accepted answer support via `_seo_ai_solved_reply` post meta with `mark_as_solved()` / `unmark_solved()` methods.
+
+### Changed
+
+- Module Manager now registers `podcast` module (default off).
+- Plugin `on_init()` registers Content_Extractor and Bbpress integrations.
+- REST controllers array expanded with `Competitor_Controller`.
+
 ## [0.7.0] - 2026-03-01
 
 ### Added

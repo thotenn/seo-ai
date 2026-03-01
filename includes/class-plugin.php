@@ -56,6 +56,7 @@ final class Plugin {
 		'SeoAi\\Rest\\Queue_Controller',
 		'SeoAi\\Rest\\Log_Controller',
 		'SeoAi\\Rest\\Inline_Ai_Controller',
+		'SeoAi\\Rest\\Competitor_Controller',
 	];
 
 	/**
@@ -146,6 +147,18 @@ final class Plugin {
 		if ( class_exists( 'SeoAi\\Modules\\Schema\\Schema_Builder' ) ) {
 			$schema_builder = new Modules\Schema\Schema_Builder();
 			$schema_builder->register_hooks();
+		}
+
+		// Content Extractor (ACF, Elementor, Divi content aggregation).
+		if ( class_exists( 'SeoAi\\Integrations\\Content_Extractor' ) ) {
+			$content_extractor = new Integrations\Content_Extractor();
+			$content_extractor->register_hooks();
+		}
+
+		// bbPress forum integration (QAPage schema).
+		if ( class_exists( 'SeoAi\\Integrations\\Bbpress' ) ) {
+			$bbpress = new Integrations\Bbpress();
+			$bbpress->register_hooks();
 		}
 
 		/**
